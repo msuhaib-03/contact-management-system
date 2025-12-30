@@ -45,4 +45,16 @@ public class userService {
         return passwordEncoder.matches(rawPassword, encodedPassword);
     }
 
+    public User changePassword(String identifier, String oldPassword, String newPassword) throws Exception {
+        User user = findByEmailOrPhone(identifier)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+
+        if (!passwordEncoder.matches(oldPassword, user.getPassword())) {
+            throw new RuntimeException("Old password is incorrect");
+        }
+
+        user.setPassword(passwordEncoder.encode(newPassword));
+        return userRepository.save(user);
+    }
+
 }

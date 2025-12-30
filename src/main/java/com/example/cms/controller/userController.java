@@ -1,5 +1,6 @@
 package com.example.cms.controller;
 
+import com.example.cms.dto.ChangePasswordRequest;
 import com.example.cms.dto.LoginRequest;
 import com.example.cms.dto.LoginResponse;
 import com.example.cms.entity.User;
@@ -57,5 +58,18 @@ public class userController {
         }
     }
 
+    @PostMapping("/change-password")
+    public ResponseEntity<?> changePassword(@RequestBody ChangePasswordRequest request) {
+        try {
+            User updatedUser = userService.changePassword(
+                    request.getIdentifier(),
+                    request.getOldPassword(),
+                    request.getNewPassword()
+            );
+            return ResponseEntity.ok("Password updated successfully");
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
 
 }
