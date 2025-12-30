@@ -1,16 +1,16 @@
-import axios from "axios";
+import api from "./axios.js";
 
-const API = axios.create({
-    baseURL: "http://localhost:8080/api",
-});
+// auth and login APIs here.
+export const register = (data) =>
+    api.post("/auth/register", data);
 
-export const registerUser = (data) =>
-    API.post("/auth/register", data);
-
-export const loginUser = (data) =>
-    API.post("/auth/login", data);
+export const login = (data) =>
+    api.post("/auth/login", data);
 
 export const changePassword = (data) =>
-    API.post("/auth/change-password", data);
+    api.post("/auth/change-password", data);
 
-export default API;
+
+
+// this file is bridge between frontend and backend.
+// only http requests are made from this file to the backend.

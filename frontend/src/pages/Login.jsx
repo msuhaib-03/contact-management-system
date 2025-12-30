@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { login } from "../api/authApi";
 import { saveToken } from "../utils/auth";
 import "../styles/auth.css";
@@ -41,9 +42,10 @@ export default function Login() {
             </form>
 
             <div className="auth-links">
-                <p onClick={() => navigate("/forgot")}>Forgot Password?</p>
-                <p onClick={() => navigate("/register")}>Create Account</p>
+                <Link to="/forgot">Forgot Password?</Link><br></br>
+                <Link to="/register">Create Account</Link>
             </div>
+
         </div>
     );
 }
