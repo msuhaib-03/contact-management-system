@@ -33,8 +33,8 @@ public class User {
     @Column(nullable = false)
     private String password;
 
-    @Column(nullable = false)
-    private String role = "USER"; // default role
+//    @Column(nullable = false)
+//    private String role = "USER"; // default role
 
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
