@@ -1,36 +1,49 @@
 import { useState } from "react";
-import { loginUser } from "../api/authApi";
-import { saveToken } from "../utils/auth";
 import { useNavigate } from "react-router-dom";
+import { login } from "../api/authApi";
+import { saveToken } from "../utils/auth";
+import "../styles/auth.css";
 
 export default function Login() {
+    const [identifier, setIdentifier] = useState("");
+    const [password, setPassword] = useState("");
     const navigate = useNavigate();
-    const [form, setForm] = useState({
-        identifier: "",
-        password: ""
-    });
 
-    const handleChange = (e) =>
-        setForm({ ...form, [e.target.name]: e.target.value });
-
-    const handleSubmit = async (e) => {
+    const handleLogin = async (e) => {
         e.preventDefault();
         try {
-            const res = await loginUser(form);
+            const res = await login({ identifier, password });
             saveToken(res.data.token);
             navigate("/contacts");
         } catch (err) {
-            alert("Invalid credentials");
+            alert(err.response?.data?.error || "Login failed");
         }
     };
 
     return (
-        <form onSubmit={handleSubmit}>
+        <div className="auth-container">
             <h2>Login</h2>
-            <input name="identifier" placeholder="Email or Phone" onChange={handleChange} required />
-            <input name="password" type="password" placeholder="Password" onChange={handleChange} required />
-            <button type="submit">Login</button>
-            <p onClick={() => navigate("/forgot")}>Forgot Password?</p>
-        </form>
+            <form onSubmit={handleLogin}>
+                <input
+                    placeholder="Email or Phone"
+                    value={identifier}
+                    onChange={(e) => setIdentifier(e.target.value)}
+                    required
+                />
+                <input
+                    type="password"
+                    placeholder="Password"
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                    required
+                />
+                <button type="submit">Login</button>
+            </form>
+
+            <div className="auth-links">
+                <p onClick={() => navigate("/forgot")}>Forgot Password?</p>
+                <p onClick={() => navigate("/register")}>Create Account</p>
+            </div>
+        </div>
     );
 }
