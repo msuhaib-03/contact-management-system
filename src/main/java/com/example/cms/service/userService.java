@@ -40,4 +40,9 @@ public class userService {
         }
         return user;
     }
+
+    public boolean matchesPassword(String rawPassword, String encodedPassword) {
+        return passwordEncoder.matches(rawPassword, encodedPassword);
+    }
+
 }
