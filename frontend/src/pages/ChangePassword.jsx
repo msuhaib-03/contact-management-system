@@ -3,7 +3,7 @@ import { changePassword } from "../api/authApi";
 import { useNavigate } from "react-router-dom";
 import "../styles/auth.css";
 
-export default function ForgotPassword() {
+export default function ChangePassword() {
     const navigate = useNavigate();
 
     const [form, setForm] = useState({
