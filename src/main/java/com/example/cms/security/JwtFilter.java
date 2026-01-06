@@ -1,5 +1,6 @@
 package com.example.cms.security;
 
+import com.example.cms.repository.TokenBlacklistRepository;
 import io.jsonwebtoken.io.IOException;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -19,6 +20,9 @@ public class JwtFilter extends OncePerRequestFilter {
 
     @Autowired
     JwtUtil jwtUtil;
+
+    @Autowired
+    TokenBlacklistRepository tokenBlacklistRepository;
 
     @Override
     protected void doFilterInternal(HttpServletRequest request,
@@ -47,6 +51,11 @@ public class JwtFilter extends OncePerRequestFilter {
                         new WebAuthenticationDetailsSource().buildDetails(request)
                 );
 
+                // Check if token is blacklisted
+                if(tokenBlacklistRepository.existsByToken(jwtToken)) {
+                    response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Token is logged out");
+                    return;
+                }
                 SecurityContextHolder.getContext().setAuthentication(authToken);
             }
         }

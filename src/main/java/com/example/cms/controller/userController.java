@@ -3,18 +3,25 @@ package com.example.cms.controller;
 import com.example.cms.dto.ChangePasswordRequest;
 import com.example.cms.dto.LoginRequest;
 import com.example.cms.dto.LoginResponse;
+import com.example.cms.entity.BlacklistedToken;
 import com.example.cms.entity.User;
+import com.example.cms.repository.TokenBlacklistRepository;
 import com.example.cms.security.JwtUtil;
 import com.example.cms.service.userService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/auth")
 public class userController {
+
+    @Autowired
+    private TokenBlacklistRepository tokenBlacklistRepository;
 
     private final userService userService;
     private final JwtUtil jwtUtil;
@@ -56,6 +63,30 @@ public class userController {
         } catch (Exception e) {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
+    }
+
+    // ================= Change Password =================
+    // logout
+    @PostMapping("/logout")
+    public ResponseEntity<?> logout(@RequestHeader("Authorization") String authHeader) {
+
+        if(authHeader == null || !authHeader.startsWith("Bearer "))
+        {
+            return ResponseEntity.badRequest().body("Invalid Authorization Header");
+        }
+        String token = authHeader.substring(7);
+        LocalDateTime expiry = jwtUtil.extractExpiration(token)
+                .toInstant()
+                .atZone(ZoneId.systemDefault())
+                .toLocalDateTime();
+
+        BlacklistedToken blacklisted = new BlacklistedToken();
+        blacklisted.setToken(token);
+        blacklisted.setExpiresAt(expiry);
+
+        tokenBlacklistRepository.save(blacklisted);
+
+        return ResponseEntity.ok(Map.of("message", "Logged out successfully"));
     }
 
     @PostMapping("/change-password")

@@ -10,6 +10,8 @@ export const login = (data) =>
 export const changePassword = (data) =>
     api.post("/auth/change-password", data);
 
+export const logout = (data) =>
+    api.post("/auth/logout");
 
 
 // this file is bridge between frontend and backend.

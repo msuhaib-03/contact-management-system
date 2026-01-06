@@ -1,12 +1,19 @@
-import { logout } from "../utils/auth";
+import { logout as localLogout } from "../utils/auth";
+import { logout as apiLogout } from "../api/authApi.js"
 import { useNavigate } from "react-router-dom";
 
 export default function Contacts() {
     const navigate = useNavigate();
 
-    const handleLogout = () => {
-        logout();
-        navigate("/login");
+    const handleLogout = async () => {
+        try{
+            await apiLogout();
+        }catch (e){
+            console.error("Logout api failed",e);
+        }finally {
+            localLogout();
+            navigate("/login");
+        }
     };
 
     return (

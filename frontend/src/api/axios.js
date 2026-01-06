@@ -28,3 +28,5 @@ api.interceptors.response.use(
 );
 
 export default api;
+
+// safety net

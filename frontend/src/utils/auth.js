@@ -9,3 +9,6 @@ export const getToken = () => {
 export const logout = () => {
     localStorage.removeItem("token");
 };
+
+
+// frontend session memory
