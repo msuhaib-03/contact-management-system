@@ -36,12 +36,12 @@ public class Contact {
     @Column(nullable = false)
     private String title;
 
-    // 📞 Phone numbers
+    // Phone numbers
     @ElementCollection
     @CollectionTable(name = "contact_phones", joinColumns = @JoinColumn(name = "contact_id"))
     private List<LabeledValue> phoneNumbers;
 
-    // 📧 Emails
+    // Emails
     @ElementCollection
     @CollectionTable(name = "contact_emails", joinColumns = @JoinColumn(name = "contact_id"))
     private List<LabeledValue> emails;
