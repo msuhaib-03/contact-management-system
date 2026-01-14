@@ -18,39 +18,38 @@ public class contactController {
     @Autowired
     ContactService contactService;
 
-    @GetMapping
-    public Page<Contact> getContacts(@AuthenticationPrincipal User user,
+    @GetMapping("/get-all-contacts")
+    public Page<Contact> getContacts(
                                      @RequestParam(required = false) String search,
                                      @RequestParam(defaultValue = "0") int page,
                                      @RequestParam(defaultValue = "10") int size) {
 
         Pageable pageable = PageRequest.of(page, size, Sort.by("firstName"));
-        return contactService.getContacts(user, search, pageable);
+        return contactService.getContacts(search, pageable);
     }
 
-    @PostMapping
-    public Contact createContact(@AuthenticationPrincipal User user,
-                                 @RequestBody Contact contact) {
-        return contactService.createContact(user, contact);
+    @PostMapping("/create-contact")
+    public Contact createContact(@RequestBody Contact contact) {
+        return contactService.createContact(contact);
     }
 
     @DeleteMapping("/{id}")
-    public void deleteContact(@AuthenticationPrincipal User user,
+    public void deleteContact(
                               @PathVariable Long id) {
-        contactService.deleteContact(id, user);
+        contactService.deleteContact(id);
     }
 
-    @PutMapping
-    public Contact updateContact(@AuthenticationPrincipal User user,
+    @PutMapping("/{id}")
+    public Contact updateContact(
                                  @PathVariable Long id,
                                  @RequestBody Contact contact) {
-        return contactService.updateContact(id, user, contact);
+        return contactService.updateContact(id, contact);
     }
 
     @GetMapping("/{id}")
-    public Contact getContact(@AuthenticationPrincipal User user,
+    public Contact getContact(
                               @PathVariable Long id) {
-        return contactService.getContact(id, user);
+        return contactService.getContact(id);
     }
 
 }
