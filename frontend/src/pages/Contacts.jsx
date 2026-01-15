@@ -121,9 +121,9 @@ export default function Contacts() {
                         <li key={c.id}>
                             <strong>{c.firstName} {c.lastName}</strong> — {c.title} -
                             <br />
-                            Emails: {c.emails.map(e => `${e.label}: ${e.value}`).join(", ")}
+                            Emails: {(c.emails || []).map(e => `${e.label}: ${e.value}`).join(", ")}
                             <br />
-                            Phones: {c.phoneNumbers.map(p => `${p.label}: ${p.value}`).join(", ")}
+                            Phones: {(c.phoneNumbers || []).map(p => `${p.label}: ${p.value}`).join(", ")}
                         </li>
                     ))}
                 </ul>
