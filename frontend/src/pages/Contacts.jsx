@@ -1,6 +1,7 @@
 import {useState, useEffect} from "react";
 import {getContacts} from "../api/contactApi";
 import {createContact} from "../api/contactApi";
+import {getToken,logout} from "../utils/auth.js";
 
 export default function Contacts() {
     // =====================
@@ -20,8 +21,8 @@ export default function Contacts() {
         firstName: "",
         lastName: "",
         title: "",
-        emails: "",
-        phoneNumbers: ""
+        emails: [{label: "", value: ""}],
+        phoneNumbers: [{label: "", value: ""}]
     });
 
     // =====================
@@ -83,12 +84,57 @@ export default function Contacts() {
             }
         }
 
+    const logout = () => {
+        localStorage.clear();
+        window.location.href = "/login";
+    };
+
+
 
     // =====================
     // UI
     // =====================
     if (loading) return <p>Loading contacts...</p>;
     if (error) return <p>{error}</p>;
+
+    // ====================
+    // HELPER FUNCTIONS
+    // ====================
+    const addEmail = () => {
+        setForm({
+            ...form,
+            emails: [...form.emails, { label: "", value: "" }]
+        });
+    };
+
+    const updateEmail = (index, field, value) => {
+        const updated = [...form.emails];
+        updated[index][field] = value;
+        setForm({ ...form, emails: updated });
+    };
+
+    const removeEmail = (index) => {
+        const updated = form.emails.filter((_, i) => i !== index);
+        setForm({ ...form, emails: updated });
+    };
+
+    const addPhone = () => {
+        setForm({
+            ...form,
+            phoneNumbers: [...form.phoneNumbers, { label: "", value: "" }]
+        });
+    };
+
+    const updatePhone = (index, field, value) => {
+        const updated = [...form.phoneNumbers];
+        updated[index][field] = value;
+        setForm({ ...form, phoneNumbers: updated });
+    };
+
+    const removePhone = (index) => {
+        const updated = form.phoneNumbers.filter((_, i) => i !== index);
+        setForm({ ...form, phoneNumbers: updated });
+    };
 
     // Get Contacts Modal
     return (
@@ -108,6 +154,9 @@ export default function Contacts() {
             />
 
             {/* Create Contact Button */}
+            <button onClick={logout}>Logout</button>
+
+
             <button onClick={() => setShowCreateModal(true)}>
                 + Create Contact
             </button>
