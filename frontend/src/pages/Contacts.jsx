@@ -1,7 +1,6 @@
 import {useState, useEffect} from "react";
 import {getContacts} from "../api/contactApi";
 import {createContact} from "../api/contactApi";
-import {getToken,logout} from "../utils/auth.js";
 
 export default function Contacts() {
     // =====================
@@ -68,33 +67,31 @@ export default function Contacts() {
                     firstName: form.firstName,
                     lastName: form.lastName,
                     title: form.title,
-                    emails: [
-                        {label: "work", value: form.emails}
-                    ],
-                    phoneNumbers: [
-                        {label: "mobile", value: form.phoneNumbers}
-                    ]
+                    emails: form.emails,
+                    phoneNumbers: form.phoneNumbers
                 };
                 await createContact(payload);
                 setShowCreateModal(false);
-                setForm({firstName: "", lastName: "", title: "", emails: "", phoneNumbers: ""});
+                setForm({
+                    firstName: "",
+                    lastName: "",
+                    title: "",
+                    emails: [{ label: "", value: "" }],
+                    phoneNumbers: [{ label: "", value: "" }]
+                });
                 fetchContacts(); // refresh list
             } catch {
                 alert("Failed to create contact");
             }
         }
 
-    const logout = () => {
-        localStorage.clear();
-        window.location.href = "/login";
-    };
-
 
 
     // =====================
     // UI
     // =====================
-    if (loading) return <p>Loading contacts...</p>;
+    // if (loading) return <p>Loading contacts...</p>;
+    //{loading && <p>Loading contacts...</p>}
     if (error) return <p>{error}</p>;
 
     // ====================
@@ -109,7 +106,11 @@ export default function Contacts() {
 
     const updateEmail = (index, field, value) => {
         const updated = [...form.emails];
-        updated[index][field] = value;
+        // updated[index][field] = value;
+        updated[index] = {
+            ...updated[index],
+            [field]: value   // MUST be string
+        };
         setForm({ ...form, emails: updated });
     };
 
@@ -127,7 +128,10 @@ export default function Contacts() {
 
     const updatePhone = (index, field, value) => {
         const updated = [...form.phoneNumbers];
-        updated[index][field] = value;
+        updated[index] = {
+            ...updated[index],
+            [field]: value
+        };
         setForm({ ...form, phoneNumbers: updated });
     };
 
@@ -152,9 +156,7 @@ export default function Contacts() {
                 }}
                 style={{ marginBottom: "15px", padding: "8px", width: "250px" }}
             />
-
-            {/* Create Contact Button */}
-            <button onClick={logout}>Logout</button>
+            {loading && <p>Loading contacts...</p>}
 
 
             <button onClick={() => setShowCreateModal(true)}>
@@ -235,17 +237,42 @@ export default function Contacts() {
                             onChange={e => setForm({ ...form, title: e.target.value })}
                         />
 
-                        <input
-                            placeholder="Emails"
-                            value={form.emails}
-                            onChange={e => setForm({ ...form, emails: e.target.value })}
-                        />
+                        <h4>Emails</h4>
+                        {form.emails.map((email, index) => (
+                            <div key={index}>
+                                <input
+                                    placeholder="Label (work, personal)"
+                                    value={email.label}
+                                    onChange={e => updateEmail(index, "label", e.target.value)}
+                                />
+                                <input
+                                    placeholder="Email"
+                                    value={email.value}
+                                    onChange={e => updateEmail(index, "value", e.target.value)}
+                                />
+                                <button onClick={() => removeEmail(index)}>X</button>
+                            </div>
+                        ))}
+                        <button onClick={addEmail}>+ Add Email</button>
 
-                        <input
-                            placeholder="Phone Numbers"
-                            value={form.phoneNumbers}
-                            onChange={e => setForm({ ...form, phoneNumbers: e.target.value })}
-                        />
+                        <h4>Phone Numbers</h4>
+                        {form.phoneNumbers.map((phone, index) => (
+                            <div key={index}>
+                                <input
+                                    placeholder="Label (mobile, home)"
+                                    value={phone.label}
+                                    onChange={e => updatePhone(index, "label", e.target.value)}
+                                />
+                                <input
+                                    placeholder="Phone Number"
+                                    value={phone.value}
+                                    onChange={e => updatePhone(index, "value", e.target.value)}
+                                />
+                                <button onClick={() => removePhone(index)}>X</button>
+                            </div>
+                        ))}
+                        <button onClick={addPhone}>+ Add Phone</button>
+
 
                         <div style={{ marginTop: "10px" }}>
                             <button onClick={handleCreate}>Save</button>
