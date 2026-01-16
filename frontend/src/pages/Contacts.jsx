@@ -3,6 +3,7 @@ import {getContacts} from "../api/contactApi";
 import {createContact} from "../api/contactApi";
 import {clearToken} from "../utils/auth.js";
 import {useNavigate} from "react-router-dom";
+import {logout as apiLogout} from "../api/authApi.js";
 
 export default function Contacts() {
     // =====================
@@ -88,9 +89,15 @@ export default function Contacts() {
         }
 
     const navigate = useNavigate();
-    const handleLogout = () => {
-        clearToken();          // remove token
-        navigate("/login"); // redirect
+    const handleLogout = async () => {
+        try {
+            await apiLogout();
+        }catch (e){
+            console.warn("Logout failed:", e);
+        }finally {
+            clearToken();          // remove token
+            navigate("/login"); // redirect
+        }
     };
 
 
