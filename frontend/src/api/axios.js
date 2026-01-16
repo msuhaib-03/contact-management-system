@@ -1,5 +1,5 @@
 import axios from "axios";
-import { getToken, logout } from "../utils/auth";
+import { getToken, clearToken } from "../utils/auth";
 
 const api = axios.create({
     baseURL: "http://localhost:8080/api",
@@ -10,18 +10,17 @@ api.interceptors.request.use(
         const token = getToken();
         if (token) {
             config.headers.Authorization = `Bearer ${token}`;
+        }else{
+            delete config.headers.Authorization;
         }
         return config;
-    },
-    (error) => Promise.reject(error)
-);
+    });
 
 api.interceptors.response.use(
-    (response) => response,
+    (res) => res,
     (error) => {
-        if (error.response?.status === 401 || error.reponse?.status === 403) {
-            localStorage.removeItem("token");
-            //logout();
+        if (error.response?.status === 401 || error.response?.status === 403) {
+            clearToken();
             window.location.href = "/login";
         }
         return Promise.reject(error);

@@ -6,7 +6,7 @@ export const getToken = () => {
     return localStorage.getItem("token");
 };
 
-export const logout = () => {
+export const clearToken = () => {
     localStorage.removeItem("token");
 };
 
