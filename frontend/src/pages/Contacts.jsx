@@ -1,6 +1,8 @@
 import {useState, useEffect} from "react";
 import {getContacts} from "../api/contactApi";
 import {createContact} from "../api/contactApi";
+import {clearToken} from "../utils/auth.js";
+import {useNavigate} from "react-router-dom";
 
 export default function Contacts() {
     // =====================
@@ -84,6 +86,12 @@ export default function Contacts() {
                 alert("Failed to create contact");
             }
         }
+
+    const navigate = useNavigate();
+    const handleLogout = () => {
+        clearToken();          // remove token
+        navigate("/login"); // redirect
+    };
 
 
 
@@ -281,6 +289,20 @@ export default function Contacts() {
                     </div>
                 </div>
             )}
+            <button
+                onClick={handleLogout}
+                style={{
+                    marginLeft: "20px",
+                    background: "crimson",
+                    color: "#fff",
+                    padding: "6px 12px",
+                    border: "none",
+                    cursor: "pointer"
+                }}
+            >
+                Logout
+            </button>
+
         </div>
     );
 }
