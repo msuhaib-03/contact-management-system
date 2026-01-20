@@ -2,8 +2,9 @@ import {useState, useEffect} from "react";
 import {getContacts} from "../api/contactApi";
 import {createContact} from "../api/contactApi";
 import {clearToken} from "../utils/auth.js";
-import {useNavigate} from "react-router-dom";
+import {useFetcher, useNavigate} from "react-router-dom";
 import {logout as apiLogout} from "../api/authApi.js";
+import "../styles/contacts.css";
 
 export default function Contacts() {
     // =====================
@@ -157,159 +158,198 @@ export default function Contacts() {
 
     // Get Contacts Modal
     return (
-        <div style={{ padding: "40px" }}>
-            <h2>My Contacts</h2>
+        <div className="contacts-page">
 
-            {/* Search */}
-            <input
-                type="text"
-                placeholder="Search by name..."
-                value={search}
-                onChange={(e) => {
-                    setPage(0);
-                    setSearch(e.target.value);
-                }}
-                style={{ marginBottom: "15px", padding: "8px", width: "250px" }}
-            />
-            {loading && <p>Loading contacts...</p>}
-
-
-            <button onClick={() => setShowCreateModal(true)}>
-                + Create Contact
-            </button>
-
-            {/* List */}
-            {contacts.length === 0 ? (
-                <p>No contacts found</p>
-            ) : (
-                <ul>
-                    {contacts.map((c) => (
-                        <li key={c.id}>
-                            <strong>{c.firstName} {c.lastName}</strong> — {c.title} -
-                            <br />
-                            Emails: {(c.emails || []).map(e => `${e.label}: ${e.value}`).join(", ")}
-                            <br />
-                            Phones: {(c.phoneNumbers || []).map(p => `${p.label}: ${p.value}`).join(", ")}
-                        </li>
-                    ))}
-                </ul>
-            )}
-
-            {/* Pagination */}
-            <div style={{ marginTop: "20px" }}>
-                <button
-                    disabled={page === 0}
-                    onClick={() => setPage(page - 1)}
-                >
-                    Prev
-                </button>
-
-                <span style={{ margin: "0 10px" }}>
-                    Page {page + 1} of {totalPages}
-                </span>
-
-                <button
-                    disabled={page + 1 >= totalPages}
-                    onClick={() => setPage(page + 1)}
-                >
-                    Next
+            {/* NAVBAR */}
+        <div className="navbar">
+            <h2>📇 Contacts Management System</h2>
+            <div className="navbar-right">
+                <span>{form.lastName || "Muhammad Suhaib"}</span>
+                <button className="logout-btn" onClick={handleLogout}>
+                    Logout
                 </button>
             </div>
+        </div>
 
-            {/* Create Contact Modal */}
+            {/* MAIN CONTENT */}
+            <div className="contacts-content">
+
+                <div className="contacts-header">
+                    <input
+                        className="search-input"
+                        placeholder="Search contacts..."
+                        value={search}
+                        onChange={e => setSearch(e.target.value)}
+                    />
+
+                    <button
+                        className="create-btn"
+                        onClick={() => setShowCreateModal(true)}
+                    >
+                        + Create Contact
+                    </button>
+                </div>
+
+                {loading && <p>Loading contacts...</p>}
+
+                <div className="contacts-grid">
+                    {contacts.map(c => (
+                        <div className="contact-card" key={c.id}>
+                            <h4>{c.firstName} {c.lastName}</h4>
+                            <div className="contact-title">{c.title}</div>
+
+                            <div className="contact-meta">
+                                📧 {(c.emails || []).map(e => e.value).join(", ")}
+                            </div>
+
+                            <div className="contact-meta">
+                                📞 {(c.phoneNumbers || []).map(p => p.value).join(", ")}
+                            </div>
+                        </div>
+                    ))}
+                </div>
+
+                <div className="pagination">
+                    <button disabled={page === 0} onClick={() => setPage(page - 1)}>
+                        Prev
+                    </button>
+                    <span>{page + 1} / {totalPages}</span>
+                    <button
+                        disabled={page + 1 >= totalPages}
+                        onClick={() => setPage(page + 1)}
+                    >
+                        Next
+                    </button>
+                </div>
+            </div>
+
+            {/* MODAL */}
             {showCreateModal && (
-                <div style={{
-                    position: "fixed",
-                    top: 0,
-                    left: 0,
-                    width: "100%",
-                    height: "100%",
-                    background: "rgba(0,0,0,0.4)"
-                }}>
-                    <div style={{
-                        background: "#fff",
-                        padding: "20px",
-                        width: "400px",
-                        margin: "100px auto"
-                    }}>
-                        <h3>Create Contact</h3>
+                <div className="modal-overlay">
+                    <div className="modal">
+                        {/* Header */}
+                        <div className="modal-header">
+                            <h3>Create Contact</h3>
+                            <button
+                                className="close-btn"
+                                onClick={() => setShowCreateModal(false)}
+                            >
+                                ✕
+                            </button>
+                        </div>
 
-                        <input
-                            placeholder="First Name"
-                            value={form.firstName}
-                            onChange={e => setForm({ ...form, firstName: e.target.value })}
-                        />
+                        {/* Body */}
+                        <div className="modal-body">
 
-                        <input
-                            placeholder="Last Name"
-                            value={form.lastName}
-                            onChange={e => setForm({ ...form, lastName: e.target.value })}
-                        />
-
-                        <input
-                            placeholder="Title"
-                            value={form.title}
-                            onChange={e => setForm({ ...form, title: e.target.value })}
-                        />
-
-                        <h4>Emails</h4>
-                        {form.emails.map((email, index) => (
-                            <div key={index}>
+                            <div className="input-row">
                                 <input
-                                    placeholder="Label (work, personal)"
-                                    value={email.label}
-                                    onChange={e => updateEmail(index, "label", e.target.value)}
+                                    placeholder="First Name"
+                                    value={form.firstName}
+                                    onChange={e =>
+                                        setForm({ ...form, firstName: e.target.value })
+                                    }
                                 />
                                 <input
-                                    placeholder="Email"
-                                    value={email.value}
-                                    onChange={e => updateEmail(index, "value", e.target.value)}
+                                    placeholder="Last Name"
+                                    value={form.lastName}
+                                    onChange={e =>
+                                        setForm({ ...form, lastName: e.target.value })
+                                    }
                                 />
-                                <button onClick={() => removeEmail(index)}>X</button>
                             </div>
-                        ))}
-                        <button onClick={addEmail}>+ Add Email</button>
 
-                        <h4>Phone Numbers</h4>
-                        {form.phoneNumbers.map((phone, index) => (
-                            <div key={index}>
-                                <input
-                                    placeholder="Label (mobile, home)"
-                                    value={phone.label}
-                                    onChange={e => updatePhone(index, "label", e.target.value)}
-                                />
-                                <input
-                                    placeholder="Phone Number"
-                                    value={phone.value}
-                                    onChange={e => updatePhone(index, "value", e.target.value)}
-                                />
-                                <button onClick={() => removePhone(index)}>X</button>
+                            <input
+                                placeholder="Title (e.g. Software Engineer)"
+                                value={form.title}
+                                onChange={e =>
+                                    setForm({ ...form, title: e.target.value })
+                                }
+                            />
+
+                            {/* EMAILS */}
+                            <div className="section">
+                                <div className="section-header">
+                                    <h4>Emails</h4>
+                                    <button className="add-btn" onClick={addEmail}>
+                                        + Add
+                                    </button>
+                                </div>
+
+                                {form.emails.map((email, index) => (
+                                    <div className="input-row" key={index}>
+                                        <input
+                                            placeholder="Label"
+                                            value={email.label}
+                                            onChange={e =>
+                                                updateEmail(index, "label", e.target.value)
+                                            }
+                                        />
+                                        <input
+                                            placeholder="Email"
+                                            value={email.value}
+                                            onChange={e =>
+                                                updateEmail(index, "value", e.target.value)
+                                            }
+                                        />
+                                        <button
+                                            className="remove-btn"
+                                            onClick={() => removeEmail(index)}
+                                        >
+                                            ✕
+                                        </button>
+                                    </div>
+                                ))}
                             </div>
-                        ))}
-                        <button onClick={addPhone}>+ Add Phone</button>
 
+                            {/* PHONES */}
+                            <div className="section">
+                                <div className="section-header">
+                                    <h4>Phone Numbers</h4>
+                                    <button className="add-btn" onClick={addPhone}>
+                                        + Add
+                                    </button>
+                                </div>
 
-                        <div style={{ marginTop: "10px" }}>
-                            <button onClick={handleCreate}>Save</button>
-                            <button onClick={() => setShowCreateModal(false)}>Cancel</button>
+                                {form.phoneNumbers.map((phone, index) => (
+                                    <div className="input-row" key={index}>
+                                        <input
+                                            placeholder="Label"
+                                            value={phone.label}
+                                            onChange={e =>
+                                                updatePhone(index, "label", e.target.value)
+                                            }
+                                        />
+                                        <input
+                                            placeholder="Phone Number"
+                                            value={phone.value}
+                                            onChange={e =>
+                                                updatePhone(index, "value", e.target.value)
+                                            }
+                                        />
+                                        <button
+                                            className="remove-btn"
+                                            onClick={() => removePhone(index)}
+                                        >
+                                            ✕
+                                        </button>
+                                    </div>
+                                ))}
+                            </div>
+
+                        </div>
+
+                        {/* Footer */}
+                        <div className="modal-footer">
+                            <button className="secondary-btn" onClick={() => setShowCreateModal(false)}>
+                                Cancel
+                            </button>
+                            <button className="primary-btn" onClick={handleCreate}>
+                                Save Contact
+                            </button>
                         </div>
                     </div>
                 </div>
             )}
-            <button
-                onClick={handleLogout}
-                style={{
-                    marginLeft: "20px",
-                    background: "crimson",
-                    color: "#fff",
-                    padding: "6px 12px",
-                    border: "none",
-                    cursor: "pointer"
-                }}
-            >
-                Logout
-            </button>
-
         </div>
     );
 }
