@@ -11,6 +11,8 @@ export default function ChangePassword() {
         oldPassword: "",
         newPassword: ""
     });
+    const [error,setError] = useState("");
+    const [loading,setLoading] = useState(false);
 
     const handleChange = (e) => {
         setForm({ ...form, [e.target.name]: e.target.value });
@@ -18,24 +20,40 @@ export default function ChangePassword() {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
+        setError("");
+        setLoading(true);
         try {
             await changePassword(form);
             alert("Password changed successfully");
             navigate("/login");
         } catch (err) {
-            alert(err.response?.data?.error || "Error changing password");
+            setError("Error Changing Password.");
+        }finally {
+            setLoading(false);
         }
     };
 
     return (
-        <div className="auth-container">
+        <div className="auth-page">
+            <div className="auth-card">
             <h2>Change Password</h2>
+
+                {error && <div className="auth-error">{error}</div>}
+
             <form onSubmit={handleSubmit}>
-                <input name="identifier" placeholder="Email or Phone" onChange={handleChange} required />
+                <div className="input-group">
+                    <input name="identifier" placeholder="Email or Phone" onChange={handleChange} required />
+                </div>
+
+                <div className="input-group">
                 <input name="oldPassword" type="password" placeholder="Old Password" onChange={handleChange} required />
+                </div>
+                    <div className="input-group">
                 <input name="newPassword" type="password" placeholder="New Password" onChange={handleChange} required />
+                </div>
                 <button type="submit">Reset</button>
             </form>
+            </div>
         </div>
     );
 }

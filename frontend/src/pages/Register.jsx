@@ -10,6 +10,8 @@ export default function Register() {
         phoneNumber: "",
         password: "",
     });
+    const [error,setError] = useState("");
+    const [loading,setLoading] = useState(false);
 
     const navigate = useNavigate();
 
@@ -19,25 +21,74 @@ export default function Register() {
 
     const handleRegister = async (e) => {
         e.preventDefault();
+        setError("");
+        setLoading(true);
         try {
             await register(form);
             alert("Registration successful!");
             navigate("/login");
         } catch (err) {
-            alert(err.response?.data?.error || "Registration failed");
+            setError("Registration failed. Please try again.");
+        }finally {
+            setLoading(false);
         }
     };
-
     return (
-        <div className="auth-container">
-            <h2>Register</h2>
-            <form onSubmit={handleRegister}>
-                <input name="name" placeholder="Name" onChange={handleChange} required />
-                <input name="email" placeholder="Email" onChange={handleChange} required />
-                <input name="phoneNumber" placeholder="Phone" onChange={handleChange} required />
-                <input type="password" name="password" placeholder="Password" onChange={handleChange} required />
-                <button type="submit">Register</button>
-            </form>
+        <div className="auth-page">
+            <div className="auth-card">
+                <h2>Create Account </h2>
+                <p className="auth-subtitle">
+                    Sign up to start managing your contacts
+                </p>
+
+                {error && <div className="auth-error">{error}</div>}
+
+                <form onSubmit={handleRegister}>
+                    <div className="input-group">
+                    <input
+                        name="name"
+                        placeholder="Full Name"
+                        onChange={handleChange}
+                        required
+                    />
+                    </div>
+
+                    <div className="input-group">
+                    <input
+                        name="email"
+                        placeholder="Email Address"
+                        onChange={handleChange}
+                        required
+                    />
+                    </div>
+
+                        <div className="input-group">
+                    <input
+                        name="phoneNumber"
+                        placeholder="Phone Number"
+                        onChange={handleChange}
+                        required
+                    />
+                        </div>
+
+                            <div className="input-group">
+                    <input
+                        type="password"
+                        name="password"
+                        placeholder="Password"
+                        onChange={handleChange}
+                        required
+                    />
+                            </div>
+
+                    <button type="submit">Create Account</button>
+                </form>
+
+                <div className="auth-links">
+                    <a href="/login">Already have an account?</a>
+                </div>
+            </div>
         </div>
     );
+
 }
