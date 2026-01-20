@@ -8,44 +8,69 @@ import "../styles/auth.css";
 export default function Login() {
     const [identifier, setIdentifier] = useState("");
     const [password, setPassword] = useState("");
+    const [error,setError] = useState("");
+    const [loading,setLoading] = useState(false);
     const navigate = useNavigate();
 
     const handleLogin = async (e) => {
         e.preventDefault();
+        setError("");
+        setLoading(true);
         try {
             const res = await login({ identifier, password });
             saveToken(res.data.token);
             navigate("/contacts");
         } catch (err) {
-            alert(err.response?.data?.error || "Login failed");
+            setError("Invalid credentials. Please try again.");
+        }finally {
+            setLoading(false);
         }
     };
 
     return (
-        <div className="auth-container">
-            <h2>Login</h2>
-            <form onSubmit={handleLogin}>
-                <input
-                    placeholder="Email or Phone"
-                    value={identifier}
-                    onChange={(e) => setIdentifier(e.target.value)}
-                    required
-                />
-                <input
-                    type="password"
-                    placeholder="Password"
-                    value={password}
-                    onChange={(e) => setPassword(e.target.value)}
-                    required
-                />
-                <button type="submit">Login</button>
-            </form>
+        <div className="auth-page">
+            <div className="auth-card">
+                <h2>Welcome Back</h2>
+                <h6 className="auth-subtitle">
+                    Login to manage your contacts
+                </h6>
 
-            <div className="auth-links">
-                <Link to="/forgot">Change Password?</Link><br></br>
-                <Link to="/register">Create Account</Link>
+                {error && <div className="auth-error">{error}</div>}
+
+                <form onSubmit={handleLogin}>
+                    <div className="input-group">
+                        <label>Email or Phone</label>
+                        <input
+                            type="text"
+                            placeholder="example@email.com"
+                            value={identifier}
+                            onChange={(e) => setIdentifier(e.target.value)}
+                            required
+                        />
+                    </div>
+
+                    <div className="input-group">
+                        <label>Password</label>
+                        <input
+                            type="password"
+                            placeholder="••••••••"
+                            value={password}
+                            onChange={(e) => setPassword(e.target.value)}
+                            required
+                        />
+                    </div>
+
+                    <button type="submit" disabled={loading}>
+                        {loading ? "Logging in..." : "Login"}
+                    </button>
+                </form>
+
+                <div className="auth-links">
+                    <Link to="/forgot">Change Password?</Link>
+                    <Link to="/register">Create Account</Link>
+                </div>
             </div>
-
         </div>
     );
+
 }
