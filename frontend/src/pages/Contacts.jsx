@@ -52,7 +52,7 @@ export default function Contacts() {
             setLoading(true);
             const res = await getContacts({
                 page,
-                size:5,
+                size:10,
                 search : debouncedSearch
                 });
                 // Spring Page response → content
@@ -171,24 +171,32 @@ export default function Contacts() {
             </div>
         </div>
 
+
             {/* MAIN CONTENT */}
             <div className="contacts-content">
 
                 <div className="contacts-header">
-                    <input
-                        className="search-input"
-                        placeholder="Search contacts..."
-                        value={search}
-                        onChange={e => setSearch(e.target.value)}
-                    />
-
                     <button
                         className="create-btn"
                         onClick={() => setShowCreateModal(true)}
                     >
                         + Create Contact
                     </button>
+                    <div className="search-box">
+                        <span className="search-icon">🔍</span>
+                        <input
+                            type="text"
+                            placeholder="Search contacts..."
+                            value={search}
+                            onChange={(e) => {
+                                setPage(0);
+                                setSearch(e.target.value);
+                            }}
+                        />
+                    </div>
                 </div>
+
+
 
                 {loading && <p>Loading contacts...</p>}
 
