@@ -4,9 +4,11 @@ import {createContact} from "../api/contactApi";
 import {deleteContact} from "../api/contactApi";
 import {updateContact} from "../api/contactApi";
 import {clearToken} from "../utils/auth.js";
+import {getCurrentUser} from "../api/contactApi.js";
 import {useFetcher, useNavigate} from "react-router-dom";
 import {logout as apiLogout} from "../api/authApi.js";
 import "../styles/contacts.css";
+import api from "../api/axios.js";
 
 export default function Contacts() {
     // =====================
@@ -36,6 +38,8 @@ export default function Contacts() {
     const [showEditModal, setShowEditModal] = useState(false);
     const [contactToEdit, setContactToEdit] = useState(null);
 
+    const [user, setUser] = useState(null);
+
     const [toast, setToast] = useState(null);
 
 
@@ -54,6 +58,15 @@ export default function Contacts() {
         }, 400); // 500ms debounce
         return () => clearTimeout(timer);
     }, [search]);
+
+    useEffect(() => {
+        getCurrentUser()
+            .then(res => {
+                console.log("Current user:", res.data);
+                setUser(res.data);
+            })
+            .catch(err => console.error("Failed to fetch user", err));
+    }, []);
 
 
     // =====================
@@ -220,7 +233,7 @@ export default function Contacts() {
             <h2>📇 Contacts Management System</h2>
             <div className="navbar-right">
                 <span className="username">
-                    {user?.firstName} { user?.lastName }
+                    {user?.name}
                 </span>
                 <button className="logout-btn" onClick={handleLogout}>
                     Logout

@@ -3,13 +3,17 @@ package com.example.cms.controller;
 import com.example.cms.entity.Contact;
 import com.example.cms.entity.User;
 import com.example.cms.service.ContactService;
+import com.example.cms.service.userService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/contacts")
@@ -17,6 +21,9 @@ public class contactController {
 
     @Autowired
     ContactService contactService;
+
+    @Autowired
+    userService userService;
 
     @GetMapping("/get-all-contacts")
     public Page<Contact> getContacts(
@@ -51,5 +58,12 @@ public class contactController {
                               @PathVariable Long id) {
         return contactService.getContact(id);
     }
+
+    @GetMapping("/me")
+    public User getCurrentUser(Authentication auth) {
+        return userService.findByEmailOrPhone(auth.getName())
+                .orElseThrow(() -> new RuntimeException("User not found"));
+    }
+
 
 }

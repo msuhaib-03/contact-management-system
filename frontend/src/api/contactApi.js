@@ -23,4 +23,9 @@ export const getContact = (id) => {
     return api.get(`/contacts/get-contact/${id}`);
 }
 
+export const getCurrentUser = () => {
+    return api.get("/contacts/me");
+}
+
+
 
