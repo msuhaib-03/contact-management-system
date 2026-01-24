@@ -33,7 +33,7 @@ public class contactController {
         return contactService.createContact(contact);
     }
 
-    @DeleteMapping("/{id}")
+    @DeleteMapping("/delete-contact/{id}")
     public void deleteContact(
                               @PathVariable Long id) {
         contactService.deleteContact(id);

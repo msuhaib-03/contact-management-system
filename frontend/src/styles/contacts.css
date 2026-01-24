@@ -91,6 +91,111 @@
     box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.15);
 }
 
+.contact-actions {
+    margin-top: 10px;
+    display: flex;
+    gap: 8px;
+}
+
+.toast {
+    position: fixed;
+    bottom: 30px;
+    right: 30px;
+    padding: 12px 18px;
+    border-radius: 8px;
+    color: white;
+    font-weight: 500;
+    animation: slideIn 0.3s ease;
+    z-index: 2000;
+}
+
+.toast.success {
+    background: #4caf50;
+}
+
+.toast.error {
+    background: crimson;
+}
+
+@keyframes slideIn {
+    from {
+        transform: translateX(40px);
+        opacity: 0;
+    }
+    to {
+        transform: translateX(0);
+        opacity: 1;
+    }
+}
+
+/*.delete-btn {*/
+/*    background: #ffe5e5;*/
+/*    color: #b00020;*/
+/*    border: none;*/
+/*    padding: 6px 10px;*/
+/*    border-radius: 6px;*/
+/*    cursor: pointer;*/
+/*}*/
+
+/*.delete-btn:hover {*/
+/*    background: #ffcccc;*/
+/*}*/
+.modal-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.45);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+}
+
+.modal {
+    background: #fff;
+    padding: 24px;
+    width: 360px;
+    border-radius: 10px;
+    animation: scaleIn 0.25s ease;
+}
+
+.modal.danger h3 {
+    color: crimson;
+}
+
+.modal-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+    margin-top: 20px;
+}
+
+.btn {
+    padding: 8px 14px;
+    border-radius: 6px;
+    border: none;
+    cursor: pointer;
+}
+
+.btn.cancel {
+    background: #eee;
+}
+
+.btn.delete {
+    background: crimson;
+    color: white;
+}
+
+@keyframes scaleIn {
+    from {
+        transform: scale(0.9);
+        opacity: 0;
+    }
+    to {
+        transform: scale(1);
+        opacity: 1;
+    }
+}
+
 
 .create-btn {
     background: #667eea;

@@ -1,6 +1,7 @@
 import {useState, useEffect} from "react";
 import {getContacts} from "../api/contactApi";
 import {createContact} from "../api/contactApi";
+import {deleteContact} from "../api/contactApi";
 import {clearToken} from "../utils/auth.js";
 import {useFetcher, useNavigate} from "react-router-dom";
 import {logout as apiLogout} from "../api/authApi.js";
@@ -27,6 +28,12 @@ export default function Contacts() {
         emails: [{label: "", value: ""}],
         phoneNumbers: [{label: "", value: ""}]
     });
+
+    const [showDeleteModal, setShowDeleteModal] = useState(false);
+    const [contactToDelete, setContactToDelete] = useState(null);
+
+    const [toast, setToast] = useState(null);
+
 
     // =====================
     // EFFECTS
@@ -75,6 +82,7 @@ export default function Contacts() {
                     phoneNumbers: form.phoneNumbers
                 };
                 await createContact(payload);
+                showToast("Contact created successfully", "success");
                 setShowCreateModal(false);
                 setForm({
                     firstName: "",
@@ -85,9 +93,28 @@ export default function Contacts() {
                 });
                 fetchContacts(); // refresh list
             } catch {
-                alert("Failed to create contact");
+                showToast("Failed to create contact", "error");
             }
+    }
+
+    const handleConfirmDelete = async () => {
+        try {
+            await deleteContact(contactToDelete.id);
+            showToast("Contact deleted successfully", "success");
+            setShowDeleteModal(false);
+            setContactToDelete(null);
+            fetchContacts();
+
+        } catch {
+            showToast("Failed to delete contact", "error");
         }
+    }
+
+    const showToast = (message, type = "success") => {
+        setToast({ message, type });
+        setTimeout(() => setToast(null), 3000);
+    };
+
 
     const navigate = useNavigate();
     const handleLogout = async () => {
@@ -96,8 +123,13 @@ export default function Contacts() {
         }catch (e){
             console.warn("Logout failed:", e);
         }finally {
-            clearToken();          // remove token
-            navigate("/login"); // redirect
+            clearToken(); // remove token
+            showToast("Logged out successfully", "success");
+
+            setTimeout(() => {
+                navigate("/login");
+            }, 1000); // small delay
+            //navigate("/login"); // redirect
         }
     };
 
@@ -196,8 +228,6 @@ export default function Contacts() {
                     </div>
                 </div>
 
-
-
                 {loading && <p>Loading contacts...</p>}
 
                 <div className="contacts-grid">
@@ -212,6 +242,19 @@ export default function Contacts() {
 
                             <div className="contact-meta">
                                 📞 {(c.phoneNumbers || []).map(p => p.value).join(", ")}
+                            </div>
+
+                            <div className="contact-actions">
+                                <button
+                                    className="delete-btn"
+                                    // onClick={() => handleDelete(c.id)}
+                                    onClick={() => {
+                                        setContactToDelete(c);
+                                        setShowDeleteModal(true);
+                                    }}
+                                >
+                                    🗑 Delete
+                                </button>
                             </div>
                         </div>
                     ))}
@@ -358,6 +401,43 @@ export default function Contacts() {
                     </div>
                 </div>
             )}
+
+            {showDeleteModal && (
+                <div className="modal-overlay">
+                    <div className="modal danger">
+                        <h3>Delete Contact</h3>
+                        <p>
+                            Are you sure you want to delete{" "}
+                            <strong>
+                                {contactToDelete?.firstName} {contactToDelete?.lastName}
+                            </strong>?
+                        </p>
+
+                        <div className="modal-actions">
+                            <button
+                                className="btn cancel"
+                                onClick={() => setShowDeleteModal(false)}
+                            >
+                                Cancel
+                            </button>
+                            <button
+                                className="btn delete"
+                                onClick={handleConfirmDelete}
+                            >
+                                Delete
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            )}
+
+            {toast && (
+                <div className={`toast ${toast.type}`}>
+                    {toast.message}
+                </div>
+            )}
+
+
         </div>
     );
 }
