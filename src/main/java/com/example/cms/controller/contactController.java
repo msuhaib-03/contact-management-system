@@ -39,7 +39,7 @@ public class contactController {
         contactService.deleteContact(id);
     }
 
-    @PutMapping("/{id}")
+    @PutMapping("/update-contact/{id}")
     public Contact updateContact(
                                  @PathVariable Long id,
                                  @RequestBody Contact contact) {

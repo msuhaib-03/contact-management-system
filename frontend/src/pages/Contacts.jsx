@@ -2,6 +2,7 @@ import {useState, useEffect} from "react";
 import {getContacts} from "../api/contactApi";
 import {createContact} from "../api/contactApi";
 import {deleteContact} from "../api/contactApi";
+import {updateContact} from "../api/contactApi";
 import {clearToken} from "../utils/auth.js";
 import {useFetcher, useNavigate} from "react-router-dom";
 import {logout as apiLogout} from "../api/authApi.js";
@@ -32,7 +33,11 @@ export default function Contacts() {
     const [showDeleteModal, setShowDeleteModal] = useState(false);
     const [contactToDelete, setContactToDelete] = useState(null);
 
+    const [showEditModal, setShowEditModal] = useState(false);
+    const [contactToEdit, setContactToEdit] = useState(null);
+
     const [toast, setToast] = useState(null);
+
 
 
     // =====================
@@ -107,6 +112,25 @@ export default function Contacts() {
 
         } catch {
             showToast("Failed to delete contact", "error");
+        }
+    }
+
+    const handleUpdate = async () =>{
+        try {
+            await updateContact(contactToEdit.id, form);
+
+            setContacts(prev =>
+                prev.map(c =>
+                    c.id === contactToEdit.id ? { ...c, ...form } : c
+                )
+            );
+
+            showToast("Contact updated successfully");
+            setShowEditModal(false);
+            setContactToEdit(null);
+        } catch (err) {
+            console.error(err);
+            showToast("Failed to update contact", "error");
         }
     }
 
@@ -195,7 +219,9 @@ export default function Contacts() {
         <div className="navbar">
             <h2>📇 Contacts Management System</h2>
             <div className="navbar-right">
-                <span>{form.lastName || "Muhammad Suhaib"}</span>
+                <span className="username">
+                    {user?.firstName} { user?.lastName }
+                </span>
                 <button className="logout-btn" onClick={handleLogout}>
                     Logout
                 </button>
@@ -253,6 +279,26 @@ export default function Contacts() {
                                 >
                                     🗑 Delete
                                 </button>
+
+                                <button
+                                    className="edit-btn"
+                                    onClick={() => {
+                                        setContactToEdit(c);
+                                        setForm({
+                                            firstName: c.firstName || "",
+                                            lastName: c.lastName || "",
+                                            title: c.title || "",
+                                            emails: c.emails?.length ? c.emails : [{ label: "", value: "" }],
+                                            phoneNumbers: c.phoneNumbers?.length
+                                                ? c.phoneNumbers
+                                                : [{ label: "", value: "" }]
+                                        });
+                                        setShowEditModal(true);
+                                    }}
+                                >
+                                    ✏️ Edit
+                                </button>
+
                             </div>
                         </div>
                     ))}
@@ -399,6 +445,140 @@ export default function Contacts() {
                     </div>
                 </div>
             )}
+
+            {showEditModal && (
+                <div className="modal-overlay">
+                    <div className="modal">
+                        {/* Header */}
+                        <div className="modal-header">
+                            <h3>Edit Contact</h3>
+                            <button
+                                className="close-btn"
+                                onClick={() => setShowEditModal(false)}
+                            >
+                                ✕
+                            </button>
+                        </div>
+
+                        {/* Body */}
+                        <div className="modal-body">
+
+                            <div className="input-row">
+                                <input
+                                    placeholder="First Name"
+                                    value={form.firstName}
+                                    onChange={e =>
+                                        setForm({ ...form, firstName: e.target.value })
+                                    }
+                                />
+                                <input
+                                    placeholder="Last Name"
+                                    value={form.lastName}
+                                    onChange={e =>
+                                        setForm({ ...form, lastName: e.target.value })
+                                    }
+                                />
+                            </div>
+
+                            <input
+                                placeholder="Title"
+                                value={form.title}
+                                onChange={e =>
+                                    setForm({ ...form, title: e.target.value })
+                                }
+                            />
+
+                            {/* EMAILS */}
+                            <div className="section">
+                                <div className="section-header">
+                                    <h4>Emails</h4>
+                                    <button className="add-btn" onClick={addEmail}>
+                                        + Add
+                                    </button>
+                                </div>
+
+                                {form.emails.map((email, index) => (
+                                    <div className="input-row" key={index}>
+                                        <input
+                                            placeholder="Label"
+                                            value={email.label}
+                                            onChange={e =>
+                                                updateEmail(index, "label", e.target.value)
+                                            }
+                                        />
+                                        <input
+                                            placeholder="Email"
+                                            value={email.value}
+                                            onChange={e =>
+                                                updateEmail(index, "value", e.target.value)
+                                            }
+                                        />
+                                        <button
+                                            className="remove-btn"
+                                            onClick={() => removeEmail(index)}
+                                        >
+                                            ✕
+                                        </button>
+                                    </div>
+                                ))}
+                            </div>
+
+                            {/* PHONES */}
+                            <div className="section">
+                                <div className="section-header">
+                                    <h4>Phone Numbers</h4>
+                                    <button className="add-btn" onClick={addPhone}>
+                                        + Add
+                                    </button>
+                                </div>
+
+                                {form.phoneNumbers.map((phone, index) => (
+                                    <div className="input-row" key={index}>
+                                        <input
+                                            placeholder="Label"
+                                            value={phone.label}
+                                            onChange={e =>
+                                                updatePhone(index, "label", e.target.value)
+                                            }
+                                        />
+                                        <input
+                                            placeholder="Phone Number"
+                                            value={phone.value}
+                                            onChange={e =>
+                                                updatePhone(index, "value", e.target.value)
+                                            }
+                                        />
+                                        <button
+                                            className="remove-btn"
+                                            onClick={() => removePhone(index)}
+                                        >
+                                            ✕
+                                        </button>
+                                    </div>
+                                ))}
+                            </div>
+
+                        </div>
+
+                        {/* Footer */}
+                        <div className="modal-footer">
+                            <button
+                                className="secondary-btn"
+                                onClick={() => setShowEditModal(false)}
+                            >
+                                Cancel
+                            </button>
+                            <button
+                                className="primary-btn"
+                                onClick={handleUpdate}
+                            >
+                                Save Changes
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            )}
+
 
             {showDeleteModal && (
                 <div className="modal-overlay">
