@@ -162,6 +162,10 @@
     color: crimson;
 }
 
+.modal.danger h4{
+    color: #222222;
+}
+
 .modal-actions {
     display: flex;
     justify-content: flex-end;
@@ -178,6 +182,7 @@
 
 .btn.cancel {
     background: #eee;
+    color: darkred;
 }
 
 .btn.delete {

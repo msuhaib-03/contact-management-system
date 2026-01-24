@@ -404,12 +404,12 @@ export default function Contacts() {
                 <div className="modal-overlay">
                     <div className="modal danger">
                         <h3>Delete Contact</h3>
-                        <p>
+                        <h4>
                             Are you sure you want to delete{" "}
                             <strong>
                                 {contactToDelete?.firstName} {contactToDelete?.lastName}
                             </strong>?
-                        </p>
+                        </h4>
 
                         <div className="modal-actions">
                             <button
