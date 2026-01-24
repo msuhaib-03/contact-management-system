@@ -128,8 +128,7 @@ export default function Contacts() {
 
             setTimeout(() => {
                 navigate("/login");
-            }, 1000); // small delay
-            //navigate("/login"); // redirect
+            }, 1000);
         }
     };
 
@@ -247,7 +246,6 @@ export default function Contacts() {
                             <div className="contact-actions">
                                 <button
                                     className="delete-btn"
-                                    // onClick={() => handleDelete(c.id)}
                                     onClick={() => {
                                         setContactToDelete(c);
                                         setShowDeleteModal(true);
