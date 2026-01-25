@@ -14,6 +14,7 @@
 
 .profile-card h3 {
     margin-bottom: 20px;
+    color: darkmagenta;
 }
 
 .profile-row {
@@ -21,6 +22,7 @@
     justify-content: space-between;
     margin-bottom: 14px;
     font-size: 14px;
+    color: slategrey;
 }
 
 .profile-row label {
@@ -32,4 +34,75 @@
     display: flex;
     gap: 12px;
     margin-top: 25px;
+}
+
+.profile-subtitle {
+    color: #6b7280;
+    font-size: 16px;
+    margin-bottom: 20px;
+}
+
+/* Overlay */
+.profile-modal-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.55);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+}
+
+/* Modal Card */
+.profile-modal {
+    background: #ffffff;
+    padding: 28px;
+    border-radius: 14px;
+    width: 420px;
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+    animation: scaleIn 0.2s ease-in-out;
+}
+
+/* Title */
+.profile-modal-title {
+    margin-bottom: 20px;
+    font-size: 20px;
+    font-weight: 600;
+    color: #111827;
+}
+
+/* Inputs */
+.profile-input {
+    width: 100%;
+    padding: 12px 14px;
+    margin-bottom: 14px;
+    border-radius: 8px;
+    border: 1px solid #d1d5db;
+    font-size: 14px;
+    color: #111827;              /* 🔑 FIX: visible text */
+    background-color: #f9fafb;
+}
+
+.profile-input::placeholder {
+    color: #9ca3af;
+}
+
+/* Actions */
+.profile-modal-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+    margin-top: 18px;
+}
+
+/* Animation */
+@keyframes scaleIn {
+    from {
+        transform: scale(0.95);
+        opacity: 0;
+    }
+    to {
+        transform: scale(1);
+        opacity: 1;
+    }
 }

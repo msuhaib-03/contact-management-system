@@ -107,6 +107,9 @@ export default function Profile() {
             <div className="profile-content">
                 <div className="profile-card">
                     <h3>Account Information</h3>
+                    <p className="profile-subtitle">
+                        Manage your personal details and security settings
+                    </p>
 
                     <div className="profile-row">
                         <label>Name</label>
@@ -128,9 +131,9 @@ export default function Profile() {
 
                         <button
                             className="secondary-btn"
-                            onClick={handleLogout}
+                            onClick={() => navigate("/contacts")}
                         >
-                            Logout
+                            Cancel
                         </button>
                     </div>
                 </div>
@@ -138,16 +141,16 @@ export default function Profile() {
 
             {/* CHANGE PASSWORD MODAL */}
             {showChangePassword && (
-                <div className="modal-overlay">
-                    <div className="modal">
-                        <h3>🔒 Change Password</h3>
+                <div className="profile-modal-overlay">
+                    <div className="profile-modal">
+                        <h3 className="profile-modal-title">🔒 Change Password</h3>
 
                         <input
                             type="password"
                             placeholder="New Password"
                             value={newPassword}
                             onChange={(e) => setNewPassword(e.target.value)}
-                            className="input-field"
+                            className="profile-input"
                         />
 
                         <input
@@ -155,10 +158,10 @@ export default function Profile() {
                             placeholder="Confirm New Password"
                             value={confirmPassword}
                             onChange={(e) => setConfirmPassword(e.target.value)}
-                            className="input-field"
+                            className="profile-input"
                         />
 
-                        <div className="modal-actions">
+                        <div className="profile-modal-actions">
                             <button
                                 className="secondary-btn"
                                 onClick={() => setShowChangePassword(false)}
