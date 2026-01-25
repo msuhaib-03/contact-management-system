@@ -52,6 +52,13 @@ export default function ChangePassword() {
                 <input name="newPassword" type="password" placeholder="New Password" onChange={handleChange} required />
                 </div>
                 <button type="submit">Reset</button>
+                <button
+                    type="button"
+                    className="secondary-btn"
+                    onClick={() => navigate("/login")} // or history.back()
+                >
+                    Cancel
+                </button>
             </form>
             </div>
         </div>
