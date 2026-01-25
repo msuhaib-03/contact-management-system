@@ -146,22 +146,47 @@ export default function Profile() {
                     <div className="profile-modal">
                         <h3 className="profile-modal-title">🔒 Change Password</h3>
 
-                        <input
-                            type="password"
-                            placeholder="New Password"
-                            value={newPassword}
-                            onChange={(e) => setNewPassword(e.target.value)}
-                            className="profile-input"
-                        />
+                        {/* New Password */}
+                        <div className="profile-input-group">
+                            <label>New Password</label>
+                            <div className="password-field">
+                                <input
+                                    type={showPassword ? "text" : "password"}
+                                    placeholder="Enter new password"
+                                    value={newPassword}
+                                    onChange={(e) => setNewPassword(e.target.value)}
+                                    className="profile-input"
+                                />
+                                <span
+                                    className="eye-toggle"
+                                    onClick={() => setShowPassword(!showPassword)}
+                                >
+                        {showPassword ? "🙈" : "👁️"}
+                    </span>
+                            </div>
+                        </div>
 
-                        <input
-                            type="password"
-                            placeholder="Confirm New Password"
-                            value={confirmPassword}
-                            onChange={(e) => setConfirmPassword(e.target.value)}
-                            className="profile-input"
-                        />
+                        {/* Confirm Password */}
+                        <div className="profile-input-group">
+                            <label>Confirm New Password</label>
+                            <div className="password-field">
+                                <input
+                                    type={showPassword ? "text" : "password"}
+                                    placeholder="Confirm new password"
+                                    value={confirmPassword}
+                                    onChange={(e) => setConfirmPassword(e.target.value)}
+                                    className="profile-input"
+                                />
+                                <span
+                                    className="eye-toggle"
+                                    onClick={() => setShowPassword(!showPassword)}
+                                >
+                        {showPassword ? "🙈" : "👁️"}
+                    </span>
+                            </div>
+                        </div>
 
+                        {/* Modal Actions */}
                         <div className="profile-modal-actions">
                             <button
                                 className="secondary-btn"

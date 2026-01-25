@@ -106,3 +106,28 @@
         opacity: 1;
     }
 }
+
+/* PASSWORD FIELD */
+.password-field {
+    position: relative;
+}
+
+.password-field input {
+    padding-right: 40px; /* space for eye icon */
+}
+
+.eye-toggle {
+    position: absolute;
+    top: 50%;
+    right: 12px;
+    transform: translateY(-50%);
+    cursor: pointer;
+    font-size: 16px;
+    color: #6b7280;
+    user-select: none;
+}
+
+.eye-toggle:hover {
+    color: #111827;
+}
+
