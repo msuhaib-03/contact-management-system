@@ -8,7 +8,6 @@ import {getCurrentUser} from "../api/contactApi.js";
 import {useFetcher, useNavigate} from "react-router-dom";
 import {logout as apiLogout} from "../api/authApi.js";
 import "../styles/contacts.css";
-import api from "../api/axios.js";
 
 export default function Contacts() {
     // =====================
@@ -232,7 +231,7 @@ export default function Contacts() {
         <div className="navbar">
             <h2>📇 Contacts Management System</h2>
             <div className="navbar-right">
-                <span className="username">
+                <span className="username" onClick={() => navigate("/profile")}>
                     {user?.name}
                 </span>
                 <button className="logout-btn" onClick={handleLogout}>

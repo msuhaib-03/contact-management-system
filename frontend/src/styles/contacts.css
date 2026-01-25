@@ -128,18 +128,6 @@
     }
 }
 
-/*.delete-btn {*/
-/*    background: #ffe5e5;*/
-/*    color: #b00020;*/
-/*    border: none;*/
-/*    padding: 6px 10px;*/
-/*    border-radius: 6px;*/
-/*    cursor: pointer;*/
-/*}*/
-
-/*.delete-btn:hover {*/
-/*    background: #ffcccc;*/
-/*}*/
 .modal-overlay {
     position: fixed;
     inset: 0;

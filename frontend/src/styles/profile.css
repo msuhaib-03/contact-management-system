@@ -1,0 +1,35 @@
+.profile-content {
+    display: flex;
+    justify-content: center;
+    margin-top: 60px;
+}
+
+.profile-card {
+    background: #fff;
+    padding: 30px;
+    border-radius: 14px;
+    width: 420px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+}
+
+.profile-card h3 {
+    margin-bottom: 20px;
+}
+
+.profile-row {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 14px;
+    font-size: 14px;
+}
+
+.profile-row label {
+    font-weight: 600;
+    color: #555;
+}
+
+.profile-actions {
+    display: flex;
+    gap: 12px;
+    margin-top: 25px;
+}

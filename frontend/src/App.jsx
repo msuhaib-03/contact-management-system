@@ -3,6 +3,7 @@ import Login from "./pages/Login";
 import Register from "./pages/Register";
 import ChangePassword from "./pages/ChangePassword.jsx";
 import Contacts from "./pages/Contacts";
+import Profile from "./pages/Profile.jsx";
 
 function App() {
     return (
@@ -12,6 +13,7 @@ function App() {
             <Route path="/register" element={<Register />} />
             <Route path="/forgot" element={<ChangePassword />} />
             <Route path="/contacts" element={<Contacts />} />
+            <Route path="/profile" element={<Profile/>} />
         </Routes>
     );
 }
