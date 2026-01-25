@@ -38,8 +38,9 @@ export default function Contacts() {
     const [contactToEdit, setContactToEdit] = useState(null);
 
     const [user, setUser] = useState(null);
-
+    const [showMenu, setShowMenu] = useState(false);
     const [toast, setToast] = useState(null);
+
 
 
 
@@ -228,17 +229,50 @@ export default function Contacts() {
         <div className="contacts-page">
 
             {/* NAVBAR */}
-        <div className="navbar">
-            <h2>📇 Contacts Management System</h2>
-            <div className="navbar-right">
-                <span className="username" onClick={() => navigate("/profile")}>
-                    {user?.name}
-                </span>
-                <button className="logout-btn" onClick={handleLogout}>
-                    Logout
-                </button>
+        {/*<div className="navbar">*/}
+        {/*    <h2>📇 Contacts Management System</h2>*/}
+        {/*    <div className="navbar-right">*/}
+        {/*        <span className="username" onClick={() => navigate("/profile")}>*/}
+        {/*            {user?.name}*/}
+        {/*        </span>*/}
+        {/*        <button className="logout-btn" onClick={handleLogout}>*/}
+        {/*            Logout*/}
+        {/*        </button>*/}
+        {/*    </div>*/}
+        {/*</div>*/}
+            <div className="navbar">
+                <h2>📇 Contacts Management System</h2>
+                <div className="navbar-right">
+                <div
+                    className="username"
+                    onClick={() => setShowMenu(prev => !prev)}
+                >
+                    <div className="avatar">
+                        {user?.name?.charAt(0)}
+                    </div>
+                    <span className="username">{user?.name}</span>
+                    <span className="caret">▾</span>
+
+                    {showMenu && (
+                        <div className="dropdown">
+                            <div
+                                className="dropdown-item profile"
+                                onClick={() => navigate("/profile")}
+                            >
+                                👤 Profile
+                            </div>
+                            <div
+                                className="dropdown-item logout"
+                                onClick={handleLogout}
+                            >
+                                🚪 Logout
+                            </div>
+                        </div>
+                    )}
+                </div>
+                </div>
             </div>
-        </div>
+
 
 
             {/* MAIN CONTENT */}
