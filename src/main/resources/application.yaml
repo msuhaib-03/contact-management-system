@@ -1,3 +1,4 @@
+#file: noinspection SpringBootApplicationYaml
 # ===============================
 # = SERVER CONFIGURATION
 # ===============================
@@ -18,8 +19,8 @@ spring:
     # ===============================
   datasource:
     url: jdbc:sqlserver://DESKTOP-9REPN8F\\SERVER2022:1433;databaseName=contactdb;encrypt=true;trustServerCertificate=true
-    username: SuperAdmin
-    password: SuperAdmin
+    username: ${DB_USERNAME}
+    password: ${DB_PASSWORD}
     driver-class-name: com.microsoft.sqlserver.jdbc.SQLServerDriver
 
   # ===============================
