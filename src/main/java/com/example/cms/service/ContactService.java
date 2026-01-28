@@ -2,6 +2,7 @@ package com.example.cms.service;
 
 import com.example.cms.entity.Contact;
 import com.example.cms.entity.User;
+import com.example.cms.exception.ResourceAlreadyExistsException;
 import com.example.cms.exception.ResourceNotFoundException;
 import com.example.cms.repository.ContactRepository;
 import com.example.cms.repository.userRepository;
@@ -33,6 +34,10 @@ public class ContactService {
     }
 
     public Contact createContact(Contact contact) {
+        if(userRepository.findByEmail(contact.getEmails().toString()).isPresent()){
+            throw new ResourceAlreadyExistsException("Email already exists.");
+        }
+
         User user = getLoggedInUser();
         contact.setUser(user);
         return contactRepository.save(contact);
@@ -65,10 +70,11 @@ public class ContactService {
                 .getContext()
                 .getAuthentication();
 
+        assert auth != null;
         String email = auth.getName(); // comes from JWT
 
         return userRepository.findByEmail(email)
-                .orElseThrow(() -> new RuntimeException("User not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("User not found"));
     }
 
 }

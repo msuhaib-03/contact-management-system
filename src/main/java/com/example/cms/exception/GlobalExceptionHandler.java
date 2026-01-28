@@ -15,11 +15,15 @@ import java.util.Map;
 @Slf4j
 @RestControllerAdvice
 public class GlobalExceptionHandler {
+
+    private static final String ERROR_KEY = "error";
+    private static final String TIMESTAMP_KEY = "timestamp";
+
     @ExceptionHandler(ResourceAlreadyExistsException.class)
     public ResponseEntity<Map<String, String>> handleAlreadyExists(ResourceAlreadyExistsException ex) {
         log.warn("Resource already exists: {}", ex.getMessage());
         Map<String, String> error = new HashMap<>();
-        error.put("error", ex.getMessage());
+        error.put(ERROR_KEY, ex.getMessage());
         return new ResponseEntity<>(error, HttpStatus.CONFLICT);
     }
 
@@ -27,7 +31,7 @@ public class GlobalExceptionHandler {
     public ResponseEntity<Map<String, String>> handleNotFound(ResourceNotFoundException ex) {
         log.warn("Resource not found: {}", ex.getMessage());
         Map<String, String> error = new HashMap<>();
-        error.put("error", ex.getMessage());
+        error.put(ERROR_KEY, ex.getMessage());
         return new ResponseEntity<>(error, HttpStatus.NOT_FOUND);
     }
 
@@ -49,8 +53,8 @@ public class GlobalExceptionHandler {
         return ResponseEntity
                 .status(HttpStatus.BAD_REQUEST)
                 .body(Map.of(
-                        "timestamp", Instant.now(),
-                        "error", ex.getMessage()
+                        TIMESTAMP_KEY, Instant.now(),
+                        ERROR_KEY, ex.getMessage()
                 ));
     }
 
@@ -58,7 +62,7 @@ public class GlobalExceptionHandler {
     public ResponseEntity<Map<String, String>> handleGeneric(Exception ex) {
         log.error("Internal server error", ex);
         Map<String, String> error = new HashMap<>();
-        error.put("error", "Internal Server Error: " + ex.getMessage());
+        error.put(ERROR_KEY, "Internal Server Error: " + ex.getMessage());
         return new ResponseEntity<>(error, HttpStatus.INTERNAL_SERVER_ERROR);
     }
 

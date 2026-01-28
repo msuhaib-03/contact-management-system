@@ -45,7 +45,7 @@ public class userService {
         return passwordEncoder.matches(rawPassword, encodedPassword);
     }
 
-    public User changePassword(String identifier, String oldPassword, String newPassword) throws Exception {
+    public User changePassword(String identifier, String oldPassword, String newPassword) throws RuntimeException {
         User user = findByEmailOrPhone(identifier)
                 .orElseThrow(() -> new RuntimeException("User not found"));
 
