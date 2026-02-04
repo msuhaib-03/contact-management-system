@@ -15,6 +15,7 @@ export default function Profile() {
     const [user, setUser] = useState(null);
     const [showChangePassword, setShowChangePassword] = useState(false);
     const [toast, setToast] = useState(null);
+    const [oldPassword, setOldPassword] = useState("");
     const [newPassword, setNewPassword] = useState("");
     const [confirmPassword, setConfirmPassword] = useState("");
     const [loading, setLoading] = useState(false);
@@ -56,14 +57,10 @@ export default function Profile() {
         }
     };
 
+    // change password from profile
     const handleChangePassword = async () => {
-        if (!newPassword || !confirmPassword) {
+        if (!oldPassword || !newPassword || !confirmPassword) {
             showToast("Please fill all fields", "error");
-            return;
-        }
-
-        if (newPassword.length < 6) {
-            showToast("Password must be at least 6 characters", "error");
             return;
         }
 
@@ -74,17 +71,24 @@ export default function Profile() {
 
         try {
             setLoading(true);
-            await apiChangePassword({ newPassword });
-            showToast("Password updated successfully");
+
+            await apiChangePassword({
+                oldPassword,
+                newPassword
+            });
+
+            showToast("Password changed successfully");
             setShowChangePassword(false);
+            setOldPassword("");
             setNewPassword("");
             setConfirmPassword("");
-        } catch (e) {
-            showToast("Failed to update password", "error");
+        } catch (err) {
+            showToast(err?.response?.data || "Failed to change password", "error");
         } finally {
             setLoading(false);
         }
     };
+
 
 
     // ------------------------
@@ -145,6 +149,19 @@ export default function Profile() {
                 <div className="profile-modal-overlay">
                     <div className="profile-modal">
                         <h3 className="profile-modal-title">🔒 Change Password</h3>
+
+                        {/* Old Password */}
+                        <div className="profile-input-group">
+                            <label>Old Password</label>
+                            <input
+                                type="password"
+                                placeholder="Enter old password"
+                                value={oldPassword}
+                                onChange={(e) => setOldPassword(e.target.value)}
+                                className="profile-input"
+                            />
+                        </div>
+
 
                         {/* New Password */}
                         <div className="profile-input-group">
