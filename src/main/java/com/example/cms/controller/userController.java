@@ -23,13 +23,11 @@ public class userController {
     @Autowired
     private TokenBlacklistRepository tokenBlacklistRepository;
 
-    private final userService userService;
-    private final JwtUtil jwtUtil;
+    @Autowired
+    userService userService;
 
-    public userController(userService userService, JwtUtil jwtUtil) {
-        this.userService = userService;
-        this.jwtUtil = new JwtUtil();
-    }
+    @Autowired
+    JwtUtil jwtUtil;
 
     // ================= Registration =================
     @PostMapping("/register")
@@ -92,7 +90,7 @@ public class userController {
     @PostMapping("/change-password")
     public ResponseEntity<?> changePassword(@RequestBody ChangePasswordRequest request) {
         try {
-            User updatedUser = userService.changePassword(
+            userService.changePassword(
                     request.getIdentifier(),
                     request.getOldPassword(),
                     request.getNewPassword()
