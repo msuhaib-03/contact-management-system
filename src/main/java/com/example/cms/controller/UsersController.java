@@ -98,7 +98,7 @@ public class UsersController {
             return ResponseEntity.ok("Password updated successfully");
         }
 
-
+        // CHANGE PASSWORD from PROFILE
     @PostMapping("/change-password")
     public ResponseEntity<String> changePassword(
             @RequestBody ProfileChangePasswordRequest request,

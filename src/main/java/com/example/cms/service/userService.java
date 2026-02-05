@@ -13,9 +13,10 @@ public class userService {
     private final userRepository userRepository;
     private final PasswordEncoder passwordEncoder;
 
-    public userService(userRepository userRepository) {
+    public userService(userRepository userRepository, PasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
-        this.passwordEncoder = new BCryptPasswordEncoder();
+       // this.passwordEncoder = new BCryptPasswordEncoder();
+        this.passwordEncoder = passwordEncoder;
     }
 
     public User registerUser(User user) throws Exception {
@@ -45,6 +46,7 @@ public class userService {
         return passwordEncoder.matches(rawPassword, encodedPassword);
     }
 
+    // PROFILE PASSWORD CHANGE
     public void changePassword(String identifier, String oldPassword, String newPassword) throws RuntimeException {
         User user = findByEmailOrPhone(identifier)
                 .orElseThrow(() -> new RuntimeException("User not found"));
@@ -57,6 +59,7 @@ public class userService {
         userRepository.save(user);
     }
 
+    // FORGOT PASSWORD
     public void resetPassword(String identifier, String newPassword) {
         User user = findByEmailOrPhone(identifier)
                 .orElseThrow(() -> new RuntimeException("User not found"));

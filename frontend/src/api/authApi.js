@@ -7,6 +7,7 @@ export const register = (data) =>
 export const login = (data) =>
     api.post("/auth/login", data);
 
+//profile password change
 export const changePassword = (data) =>
     api.post("/auth/change-password", data);
 
