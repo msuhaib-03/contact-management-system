@@ -116,6 +116,7 @@ class userServiceTests {
 
         assertThrows(Exception.class, () -> userService.registerUser(user));
     }
+
     // ================= FIND BY IDENTIFIER =================
     @Test
     void findByEmailOrPhone_email() {
@@ -142,6 +143,26 @@ class userServiceTests {
 
         assertTrue(result.isPresent());
         verify(userRepository).findByPhoneNumber("03123456789");
+    }
+
+    // ================= RESET PASSWORD =================
+    // ---------------- RESET PASSWORD ----------------
+
+    @Test
+    void resetPassword_success() {
+
+        User user = new User();
+        user.setPassword("old");
+
+        when(userRepository.findByEmail("test@gmail.com"))
+                .thenReturn(Optional.of(user));
+
+        when(passwordEncoder.encode("new")).thenReturn("newEncoded");
+
+        userService.resetPassword("test@gmail.com", "new");
+
+        assertEquals("newEncoded", user.getPassword());
+        verify(userRepository).save(user);
     }
 
 }
