@@ -12,8 +12,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
@@ -116,6 +115,33 @@ class userServiceTests {
                 .thenReturn(Optional.of(new User()));
 
         assertThrows(Exception.class, () -> userService.registerUser(user));
+    }
+    // ================= FIND BY IDENTIFIER =================
+    @Test
+    void findByEmailOrPhone_email() {
+        User user = new User();
+
+        when(userRepository.findByEmail("test@gmail.com"))
+                .thenReturn(Optional.of(user));
+
+        Optional<User> result = userService.findByEmailOrPhone("test@gmail.com");
+
+        assertTrue(result.isPresent());
+        verify(userRepository).findByEmail("test@gmail.com");
+    }
+
+
+    @Test
+    void findByEmailOrPhone_phone() {
+        User user = new User();
+
+        when(userRepository.findByPhoneNumber("03123456789"))
+                .thenReturn(Optional.of(user));
+
+        Optional<User> result = userService.findByEmailOrPhone("03123456789");
+
+        assertTrue(result.isPresent());
+        verify(userRepository).findByPhoneNumber("03123456789");
     }
 
 }
