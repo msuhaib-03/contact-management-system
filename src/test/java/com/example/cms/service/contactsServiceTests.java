@@ -1,7 +1,10 @@
 package com.example.cms.service;
 
 import com.example.cms.entity.Contact;
+import com.example.cms.entity.LabeledValue;
 import com.example.cms.entity.User;
+import com.example.cms.exception.ResourceAlreadyExistsException;
+import com.example.cms.exception.ResourceNotFoundException;
 import com.example.cms.repository.ContactRepository;
 import com.example.cms.repository.userRepository;
 import org.junit.jupiter.api.AfterEach;
@@ -17,6 +20,8 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import java.util.List;
 import java.util.Optional;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.verify;
@@ -60,5 +65,128 @@ class contactsServiceTests {
         contactService.getContacts(null, Pageable.unpaged());
 
         verify(contactRepository).findByUser(eq(user), any());
+    }
+
+    @Test
+    void getContacts_withSearch() {
+        User user = mockLoginUser();
+
+        contactService.getContacts("Suhaib", Pageable.unpaged());
+
+        verify(contactRepository)
+                .findByUserAndFirstNameContainingIgnoreCaseOrLastNameContainingIgnoreCase(
+                        eq(user), eq("Suhaib"), eq("Suhaib"), any()
+                );
+    }
+
+    // ============ CREATE CONTACT =============
+    @Test
+    void createContact_success() {
+        User user = mockLoginUser();
+
+        Contact contact = new Contact();
+        LabeledValue email = new LabeledValue();
+        email.setLabel("home");
+        email.setValue("abc@gmail.com");
+        contact.setEmails(List.of(email));
+
+        when(userRepository.findByEmail(contact.getEmails().toString()))
+                .thenReturn(Optional.empty());
+
+        contactService.createContact(contact);
+
+        assertEquals(user, contact.getUser());
+        verify(contactRepository).save(contact);
+    }
+
+    @Test
+    void createContact_duplicateEmail() {
+        mockLoginUser();
+
+        Contact contact = new Contact();
+        LabeledValue email = new LabeledValue();
+        email.setLabel("home");
+        email.setValue("abc@gmail.com");
+        contact.setEmails(List.of(email));
+        when(userRepository.findByEmail(contact.getEmails().toString()))
+                .thenReturn(Optional.of(new User()));
+
+        assertThrows(ResourceAlreadyExistsException.class,
+                () -> contactService.createContact(contact));
+    }
+
+    // ============ GET CONTACT =============
+    @Test
+    void getContact_success() {
+        User user = mockLoginUser();
+
+        Contact contact = new Contact();
+        contact.setId(1L);
+        contact.setUser(user);
+
+        when(contactRepository.findById(1L))
+                .thenReturn(Optional.of(contact));
+
+        Contact result = contactService.getContact(1L);
+
+        assertEquals(contact, result);
+    }
+
+    @Test
+    void getContact_wrongOwner() {
+        User user = mockLoginUser();
+
+        User other = new User();
+        other.setId(99L);
+
+        Contact contact = new Contact();
+        contact.setId(1L);
+        contact.setUser(other);
+
+        when(contactRepository.findById(1L))
+                .thenReturn(Optional.of(contact));
+
+        assertThrows(ResourceNotFoundException.class,
+                () -> contactService.getContact(1L));
+    }
+
+    // ============ UPDATE CONTACT =============
+    @Test
+    void updateContact_success() {
+        User user = mockLoginUser();
+
+        Contact existing = new Contact();
+        existing.setId(1L);
+        existing.setUser(user);
+
+        when(contactRepository.findById(1L))
+                .thenReturn(Optional.of(existing));
+
+        Contact updated = new Contact();
+        updated.setFirstName("Ali");
+        updated.setLastName("Khan");
+
+        contactService.updateContact(1L, updated);
+
+        assertEquals("Ali", existing.getFirstName());
+        assertEquals("Khan", existing.getLastName());
+        verify(contactRepository).save(existing);
+    }
+
+    // =========== DELETE CONTACT =============
+    @Test
+    void deleteContact_success() {
+        User user = mockLoginUser();
+
+        Contact contact = new Contact();
+        contact.setId(1L);
+        contact.setUser(user);
+
+        when(contactRepository.findById(1L))
+                .thenReturn(Optional.of(contact));
+
+        contactService.deleteContact(1L);
+
+        verify(contactRepository).delete(contact);
     }
 }
