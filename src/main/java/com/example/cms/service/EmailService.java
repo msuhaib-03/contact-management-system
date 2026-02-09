@@ -1,14 +1,15 @@
 package com.example.cms.service;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Service;
 
 @Service
+@RequiredArgsConstructor
 public class EmailService {
-    @Autowired
-    private JavaMailSender mailSender;
+
+    private final JavaMailSender javaMailSender;
 
     public void sendOtp(String to, String otp) {
 
@@ -16,7 +17,6 @@ public class EmailService {
         msg.setTo(to);
         msg.setSubject("Your Password Reset OTP");
         msg.setText("Your OTP is: " + otp + "\nExpires in 5 minutes.");
-
-        mailSender.send(msg);
+        javaMailSender.send(msg);
     }
 }

@@ -1,7 +1,10 @@
 package com.example.cms.service;
 
+import com.example.cms.entity.PasswordResetToken;
 import com.example.cms.entity.User;
+import com.example.cms.repository.PasswordResetTokenRepository;
 import com.example.cms.repository.userRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -12,6 +15,9 @@ import java.util.Optional;
 public class userService {
     private final userRepository userRepository;
     private final PasswordEncoder passwordEncoder;
+
+    @Autowired
+        private PasswordResetTokenRepository passwordResetTokenRepository;
 
     public userService(userRepository userRepository, PasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
@@ -60,13 +66,30 @@ public class userService {
     }
 
     // FORGOT PASSWORD
-    public void resetPassword(String identifier, String newPassword) {
-        User user = findByEmailOrPhone(identifier)
+    public void resetPassword(String email, String newPassword) {
+
+        PasswordResetToken token = passwordResetTokenRepository
+                .findByEmail(email)
+                .orElseThrow(() -> new RuntimeException("Request not found"));
+
+        if (!token.isVerified())
+            throw new RuntimeException("OTP not verified");
+
+        User user = userRepository.findByEmail(email)
                 .orElseThrow(() -> new RuntimeException("User not found"));
 
         user.setPassword(passwordEncoder.encode(newPassword));
         userRepository.save(user);
+
+        passwordResetTokenRepository.delete(token);
     }
+//    public void resetPassword(String identifier, String newPassword) {
+//        User user = findByEmailOrPhone(identifier)
+//                .orElseThrow(() -> new RuntimeException("User not found"));
+//
+//        user.setPassword(passwordEncoder.encode(newPassword));
+//        userRepository.save(user);
+//    }
 
 
 }
