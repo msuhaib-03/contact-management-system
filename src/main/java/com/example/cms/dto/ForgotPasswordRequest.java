@@ -6,4 +6,5 @@ import lombok.Data;
 public class ForgotPasswordRequest {
     private String identifier; // email or phone
     private String newPassword;
+    private String email;
 }
