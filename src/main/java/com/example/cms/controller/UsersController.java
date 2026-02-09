@@ -8,6 +8,7 @@ import com.example.cms.entity.BlacklistedToken;
 import com.example.cms.entity.User;
 import com.example.cms.repository.TokenBlacklistRepository;
 import com.example.cms.security.JwtUtil;
+import com.example.cms.service.PasswordResetService;
 import com.example.cms.service.userService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -23,6 +24,9 @@ public class UsersController {
 
         @Autowired
         private TokenBlacklistRepository tokenBlacklistRepository;
+
+        @Autowired
+    PasswordResetService passwordResetService;
 
         @Autowired
         userService userService;
@@ -64,8 +68,7 @@ public class UsersController {
             }
         }
 
-        // ================= Change Password =================
-        // logout
+        // ================= Logout =================
         @PostMapping("/logout")
         public ResponseEntity<?> logout(@RequestHeader("Authorization") String authHeader) {
 
@@ -88,17 +91,8 @@ public class UsersController {
             return ResponseEntity.ok(Map.of("message", "Logged out successfully"));
         }
 
-        // FORGOT PASSWORD
-        @PostMapping("/forgot-password")
-        public ResponseEntity<?> forgotPassword(@RequestBody ForgotPasswordRequest request) {
-            userService.resetPassword(
-                    request.getIdentifier(),
-                    request.getNewPassword()
-            );
-            return ResponseEntity.ok("Password updated successfully");
-        }
-
         // CHANGE PASSWORD from PROFILE
+        // ================= Change Password =================
     @PostMapping("/change-password")
     public ResponseEntity<String> changePassword(
             @RequestBody ProfileChangePasswordRequest request,
@@ -112,6 +106,26 @@ public class UsersController {
         return ResponseEntity.ok("Password updated successfully");
     }
 
+    // ================= Forget Password =================
+    // FORGOT PASSWORD
+    @PostMapping("/forgot-password/generate-otp")
+    public ResponseEntity<String> generateOtp(@RequestParam String email) {
+        passwordResetService.generateOtp(email);
+        return ResponseEntity.ok("OTP sent to email");
+    }
+
+    @PostMapping("/forgot-password/verify-otp")
+    public ResponseEntity<String> verifyOtp(@RequestParam String email,
+                                       @RequestParam String otp) {
+        passwordResetService.verifyOtp(email, otp);
+        return ResponseEntity.ok("OTP verified");
+    }
+
+    @PostMapping("/forgot-password/reset")
+    public ResponseEntity<String> resetPassword(@RequestBody ForgotPasswordRequest req) {
+        userService.resetPassword(req.getEmail(), req.getNewPassword());
+        return ResponseEntity.ok("Password reset successful");
+    }
 }
 
 
