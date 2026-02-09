@@ -12,8 +12,4 @@ public class ContactManagementSystem {
 		SpringApplication.run(ContactManagementSystem.class, args);
 	}
 
-    @Bean
-    public RestTemplate restTemplate(){
-        return new RestTemplate();
-    }
 }
