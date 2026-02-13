@@ -11,6 +11,13 @@ export default function Login() {
     const [error,setError] = useState("");
     const [loading,setLoading] = useState(false);
     const navigate = useNavigate();
+    const [toast, setToast] = useState(null);
+
+
+    const showToast = (message, type = "success") => {
+        setToast({ message, type });
+        setTimeout(() => setToast(null), 3000);
+    };
 
     const handleLogin = async (e) => {
         e.preventDefault();
@@ -19,9 +26,12 @@ export default function Login() {
         try {
             const res = await login({ identifier, password });
             saveToken(res.data.token);
-            navigate("/contacts");
+            showToast("Login Successful", "success");
+            setTimeout(() => {
+                navigate("/contacts");
+            }, 2000);
         } catch (err) {
-            setError("Invalid credentials. Please try again.");
+            showToast("Invalid credentials. Please try again.");
         }finally {
             setLoading(false);
         }
@@ -70,6 +80,11 @@ export default function Login() {
                     <Link to="/register">Create Account</Link>
                 </div>
             </div>
+            {toast && (
+                <div className={`toast ${toast.type}`}>
+                    {toast.message}
+                </div>
+            )}
         </div>
     );
 
