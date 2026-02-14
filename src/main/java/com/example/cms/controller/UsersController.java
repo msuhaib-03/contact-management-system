@@ -111,7 +111,7 @@ public class UsersController {
     @PostMapping("/forgot-password/generate-otp")
     public ResponseEntity<String> generateOtp(@RequestParam String email) {
         passwordResetService.generateOtp(email);
-        return ResponseEntity.ok("OTP sent to email");
+        return ResponseEntity.ok("OTP sent to email. Check your mail shortly.");
     }
 
     @PostMapping("/forgot-password/verify-otp")
