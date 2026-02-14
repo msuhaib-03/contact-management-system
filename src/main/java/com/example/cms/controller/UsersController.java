@@ -23,10 +23,10 @@ import java.util.Map;
 public class UsersController {
 
         @Autowired
-        private TokenBlacklistRepository tokenBlacklistRepository;
+        TokenBlacklistRepository tokenBlacklistRepository;
 
         @Autowired
-    PasswordResetService passwordResetService;
+        PasswordResetService passwordResetService;
 
         @Autowired
         userService userService;

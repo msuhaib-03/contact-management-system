@@ -8,9 +8,13 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
+
+import java.util.List;
 import java.util.Optional;
 
 import static org.mockito.ArgumentMatchers.any;
@@ -38,7 +42,8 @@ class contactServiceControllerTests {
         controller.userService = userService;
 
         // standalone setup
-        mockMvc = MockMvcBuilders.standaloneSetup(controller).build();
+        mockMvc = MockMvcBuilders.standaloneSetup(controller)
+                .build();
     }
 
     // helper authentication
@@ -46,43 +51,17 @@ class contactServiceControllerTests {
         return new UsernamePasswordAuthenticationToken("test@gmail.com", null);
     }
 
-    // ================= GET /contacts/get-all-contacts =================
-//    @Test
-//    void testGetAllContacts() throws Exception {
-//        User mockUser = new User();
-//        mockUser.setId(1L);
-//        mockUser.setEmail("test@gmail.com");
-//
-//        Contact contact = new Contact();
-//        contact.setId(1L);
-//        contact.setFirstName("John");
-//        contact.setLastName("Doe");
-//        contact.setUser(mockUser);
-//
-//        List<Contact> contacts = List.of(contact);
-//        Page<Contact> page = new PageImpl<>(contacts);
-//
-//        when(contactService.getContacts(any(), any())).thenReturn(page);
-//
-//        mockMvc.perform(get("/contacts/get-all-contacts")
-//                        .principal(auth()))
-//                .andExpect(status().isOk())
-//                .andExpect(jsonPath("$.content[0].firstName").value("John"))
-//                .andExpect(jsonPath("$.content[0].lastName").value("Doe"))
-//                .andExpect(jsonPath("$.content[0].user.email").value("test@gmail.com"));
-//    }
+   //  ================= GET /contacts/get-all-contacts =================
+   @Test
+   void testGetAllContacts() throws Exception {
+       Page<Contact> page = new PageImpl<>(List.of(new Contact()));
+       when(contactService.getContacts(any(), any())).thenReturn(page);
 
-//    @Test
-//    void testGetAllContacts() throws Exception {
-//        List<Contact> contacts = List.of(new Contact());
-//        Page<Contact> page = new PageImpl<>(contacts);
-//
-//        when(contactService.getContacts(any(), any())).thenReturn(page);
-//
-//        mockMvc.perform(get("/contacts/get-all-contacts")
-//                        .principal(auth()))
-//                .andExpect(status().isOk());
-//    }
+       mockMvc.perform(get("/contacts/get-all-contacts")
+                       .principal(auth()))
+               .andExpect(status().isOk());
+   }
+
 
     // ================= POST /contacts/create-contact =================
     @Test
