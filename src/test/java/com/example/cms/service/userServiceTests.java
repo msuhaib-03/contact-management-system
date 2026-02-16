@@ -146,7 +146,6 @@ class userServiceTests {
     }
 
     // ================= RESET PASSWORD =================
-    // ---------------- RESET PASSWORD ----------------
 
     @Test
     void resetPassword_success() {

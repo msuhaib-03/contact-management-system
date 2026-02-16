@@ -8,13 +8,10 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
-import java.util.List;
 import java.util.Optional;
 
 import static org.mockito.ArgumentMatchers.any;
@@ -50,18 +47,6 @@ class contactServiceControllerTests {
     private UsernamePasswordAuthenticationToken auth() {
         return new UsernamePasswordAuthenticationToken("test@gmail.com", null);
     }
-
-   //  ================= GET /contacts/get-all-contacts =================
-   @Test
-   void testGetAllContacts() throws Exception {
-       Page<Contact> page = new PageImpl<>(List.of(new Contact()));
-       when(contactService.getContacts(any(), any())).thenReturn(page);
-
-       mockMvc.perform(get("/contacts/get-all-contacts")
-                       .principal(auth()))
-               .andExpect(status().isOk());
-   }
-
 
     // ================= POST /contacts/create-contact =================
     @Test

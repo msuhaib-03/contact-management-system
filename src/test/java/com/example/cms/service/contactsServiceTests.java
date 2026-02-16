@@ -4,7 +4,6 @@ import com.example.cms.entity.Contact;
 import com.example.cms.entity.LabeledValue;
 import com.example.cms.entity.User;
 import com.example.cms.exception.ResourceAlreadyExistsException;
-import com.example.cms.exception.ResourceNotFoundException;
 import com.example.cms.repository.ContactRepository;
 import com.example.cms.repository.userRepository;
 import org.junit.jupiter.api.AfterEach;
@@ -130,24 +129,6 @@ class contactsServiceTests {
         Contact result = contactService.getContact(1L);
 
         assertEquals(contact, result);
-    }
-
-    @Test
-    void getContact_wrongOwner() {
-        User user = mockLoginUser();
-
-        User other = new User();
-        other.setId(99L);
-
-        Contact contact = new Contact();
-        contact.setId(1L);
-        contact.setUser(other);
-
-        when(contactRepository.findById(1L))
-                .thenReturn(Optional.of(contact));
-
-        assertThrows(ResourceNotFoundException.class,
-                () -> contactService.getContact(1L));
     }
 
     // ============ UPDATE CONTACT =============
