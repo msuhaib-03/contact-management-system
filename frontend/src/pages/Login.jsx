@@ -4,6 +4,7 @@ import { Link } from "react-router-dom";
 import { login } from "../api/authApi";
 import { saveToken } from "../utils/auth";
 import "../styles/auth.css";
+import connectingteams from "../assets/connectingteams.svg";
 
 export default function Login() {
     const [identifier, setIdentifier] = useState("");
@@ -30,7 +31,7 @@ export default function Login() {
             setTimeout(() => {
                 navigate("/contacts");
             }, 2000);
-        } catch (err) {
+        } catch (err){
             showToast("Invalid credentials. Please try again.");
         }finally {
             setLoading(false);
@@ -39,6 +40,7 @@ export default function Login() {
 
     return (
         <div className="auth-page">
+            <img src = {connectingteams} alt="Connecting Teams" className="auth-image" />
             <div className="auth-card">
                 <h2>Welcome Back</h2>
                 <h6 className="auth-subtitle">
