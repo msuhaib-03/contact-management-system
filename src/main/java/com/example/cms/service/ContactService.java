@@ -87,7 +87,7 @@ public class ContactService {
         return contactRepository.findByUserIdAndIsFavoriteTrue(user.getId());
     }
 
-    public FavoriteResponseDTO toggleFvorite(Long id) {
+    public FavoriteResponseDTO toggleFavorite(Long id) {
         User user = getLoggedInUser();
         Contact contact = contactRepository.findByIdAndUser(id, user)
                 .orElseThrow(() -> new ResourceNotFoundException("Contact not found"));
