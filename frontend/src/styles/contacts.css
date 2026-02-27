@@ -455,3 +455,72 @@
     color: #dc2626;
 }
 
+/* BELOW IS FOR SIDEBAR*/
+.contacts-layout {
+    display: flex;
+    height: calc(100vh - 70px);
+}
+
+.sidebar {
+    width: 220px;
+    background: #1e293b;
+    color: white;
+    padding: 20px;
+}
+
+.sidebar-title {
+    font-weight: bold;
+    margin-bottom: 20px;
+}
+
+.sidebar-item {
+    padding: 10px;
+    border-radius: 6px;
+    cursor: pointer;
+    margin-bottom: 8px;
+    transition: 0.2s;
+}
+
+.sidebar-item:hover {
+    background: #334155;
+}
+
+.sidebar-item.active {
+    background: #3b82f6;
+}
+
+.contacts-content {
+    flex: 1;
+    padding: 20px;
+    overflow-y: auto;
+}
+
+/* ========================= */
+/* FAVORITE HEART BUTTON */
+/* ========================= */
+
+.favorite-btn {
+    background: none;
+    border: none;
+    font-size: 22px;
+    cursor: pointer;
+    transition: transform 0.2s ease, filter 0.2s ease;
+}
+
+.favorite-btn:hover {
+    transform: scale(1.2);
+    filter: brightness(1.2);
+}
+
+/* ========================= */
+/* EMPTY STATE */
+/* ========================= */
+
+.empty-state {
+    text-align: center;
+    padding: 60px 20px;
+    color: #888;
+    font-size: 18px;
+}
+
+

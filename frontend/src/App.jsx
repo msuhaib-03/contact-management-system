@@ -4,6 +4,7 @@ import Register from "./pages/Register";
 import ForgotPassword from "./pages/ForgotPassword.jsx";
 import Contacts from "./pages/Contacts";
 import Profile from "./pages/Profile.jsx";
+import Favorites from "./pages/Favorites.jsx";
 
 function App() {
     return (
@@ -14,6 +15,7 @@ function App() {
             <Route path="/forgot" element={<ForgotPassword />} />
             <Route path="/contacts" element={<Contacts />} />
             <Route path="/profile" element={<Profile/>} />
+            <Route path="/favorites" element={<Favorites/>} />
         </Routes>
     );
 }
