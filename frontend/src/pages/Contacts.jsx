@@ -29,7 +29,8 @@ export default function Contacts() {
         lastName: "",
         title: "",
         emails: [{label: "", value: ""}],
-        phoneNumbers: [{label: "", value: ""}]
+        phoneNumbers: [{label: "", value: ""}],
+        isFavorite: false
     });
 
     const [showDeleteModal, setShowDeleteModal] = useState(false);
@@ -105,7 +106,8 @@ export default function Contacts() {
                     lastName: form.lastName,
                     title: form.title,
                     emails: form.emails,
-                    phoneNumbers: form.phoneNumbers
+                    phoneNumbers: form.phoneNumbers,
+                    isFavorite: form.isFavorite
                 };
                 await createContact(payload);
                 showToast("Contact created successfully", "success");

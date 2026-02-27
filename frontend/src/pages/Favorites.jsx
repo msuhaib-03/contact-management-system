@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { getFavoriteContacts, getCurrentUser } from "../api/contactApi";
 import {useNavigate} from "react-router-dom";
 import "../styles/contacts.css";
+import "../styles/favorites.css"
 
 export default function Favorites() {
     const navigate = useNavigate();
@@ -104,9 +105,9 @@ export default function Favorites() {
 
 
                 {/* MAIN CONTENT */}
-                <div className="content-area">
+                <div className="contacts-content">
 
-                    <h2>❤️ Favorite Contacts</h2>
+                    <h2 className="favorites-heading">❤️ Favorite Contacts</h2>
 
                     {loading && <p>Loading favorites...</p>}
 
@@ -114,15 +115,17 @@ export default function Favorites() {
                         <div>No favorite contacts yet</div>
                     )}
 
-                    <div className="contacts-grid">
+                    <div className="contact-grid">
                         {favorites.map(contact => (
                             <div key={contact.id} className="contact-card">
-                                <h4>{contact.firstName} {contact.lastName}</h4>
-                                <div className="contact-title">
+                                <h4 className="favorite-name">
+                                {contact.firstName} {contact.lastName}
+                                </h4>
+                                <div className="favorite-title">
                                     {contact.title}
                                 </div>
 
-                                <div className="contact-meta">
+                                <div className="favorite-meta">
                                     📧 {(contact.emails || []).map(e => e.value).join(", ")}
                                 </div>
 

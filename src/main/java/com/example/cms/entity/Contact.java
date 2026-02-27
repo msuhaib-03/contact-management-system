@@ -1,17 +1,15 @@
 package com.example.cms.entity;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
+
 import java.time.LocalDateTime;
 import java.util.List;
 
 @AllArgsConstructor
 @NoArgsConstructor
-@Builder
-@Data
+@Getter
+@Setter
 @Entity
 @Table(name = "contacts")
 public class Contact {
@@ -48,7 +46,7 @@ public class Contact {
     private LocalDateTime updatedAt;
 
     @Column(nullable = false)
-    private boolean isFavorite;
+    private boolean isFavorite = false;
 
     @PrePersist
     void onCreate() {
