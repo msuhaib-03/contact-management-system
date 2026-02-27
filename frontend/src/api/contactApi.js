@@ -21,11 +21,19 @@ export const deleteContact = (id) => {
 
 export const getContact = (id) => {
     return api.get(`/contacts/get-contact/${id}`);
-}
+};
 
 export const getCurrentUser = () => {
     return api.get("/contacts/me");
-}
+};
+
+export const toggleFavorite = (id) => {
+    return api.put(`/contacts/favorites/${id}`);
+};
+
+export const getFavoriteContacts = () => {
+    return api.get("/contacts/favorites");
+};
 
 
 

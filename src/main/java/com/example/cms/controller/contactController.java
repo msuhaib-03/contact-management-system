@@ -1,5 +1,6 @@
 package com.example.cms.controller;
 
+import com.example.cms.dto.FavoriteResponseDTO;
 import com.example.cms.entity.Contact;
 import com.example.cms.entity.User;
 import com.example.cms.service.ContactService;
@@ -11,6 +12,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 
 @RestController
@@ -62,6 +65,20 @@ public class contactController {
         return userService.findByEmailOrPhone(auth.getName())
                 .orElseThrow(() -> new RuntimeException("User not found"));
     }
+
+    // ================== OPTIONAL FEATURES NOW ==================
+    // FAVORITE CONTACT ENDPOINTS
+    @GetMapping("/favorites")
+    public List<Contact> getFavorites(){
+        return contactService.getFavoriteContacts();
+    }
+
+    @PutMapping("/favorites/{id}")
+    public FavoriteResponseDTO toggleFavorite(
+            @PathVariable Long id) {
+        return contactService.toggleFavorite(id);
+    }
+
 
 
 }

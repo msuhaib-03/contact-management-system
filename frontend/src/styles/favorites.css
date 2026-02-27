@@ -1,0 +1,45 @@
+/* ===== FAVORITES PAGE ONLY ===== */
+
+.favorites-content {
+    padding: 20px;
+}
+
+.favorites-heading {
+    margin-bottom: 20px;
+    color: #222;
+}
+
+.favorites-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+    gap: 20px;
+}
+
+.favorite-card {
+    background: #ffffff;
+    padding: 18px;
+    border-radius: 12px;
+    box-shadow: 0 3px 10px rgba(0,0,0,0.06);
+    transition: 0.2s ease;
+}
+
+.favorite-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 6px 18px rgba(0,0,0,0.08);
+}
+
+.favorite-name {
+    margin-bottom: 6px;
+}
+
+.favorite-title {
+    font-size: 14px;
+    color: #6b7280;
+    margin-bottom: 8px;
+}
+
+.favorite-meta {
+    font-size: 13px;
+    color: #374151;
+    margin-bottom: 4px;
+}

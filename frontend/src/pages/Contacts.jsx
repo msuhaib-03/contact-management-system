@@ -6,6 +6,7 @@ import {updateContact} from "../api/contactApi";
 import {clearToken} from "../utils/auth.js";
 import {getCurrentUser} from "../api/contactApi.js";
 import {useFetcher, useNavigate} from "react-router-dom";
+import { toggleFavorite } from "../api/contactApi";
 import {logout as apiLogout} from "../api/authApi.js";
 import "../styles/contacts.css";
 
@@ -28,7 +29,8 @@ export default function Contacts() {
         lastName: "",
         title: "",
         emails: [{label: "", value: ""}],
-        phoneNumbers: [{label: "", value: ""}]
+        phoneNumbers: [{label: "", value: ""}],
+        isFavorite: false
     });
 
     const [showDeleteModal, setShowDeleteModal] = useState(false);
@@ -41,8 +43,7 @@ export default function Contacts() {
     const [showMenu, setShowMenu] = useState(false);
     const [toast, setToast] = useState(null);
 
-
-
+    const [view, setView] = useState("all");
 
     // =====================
     // EFFECTS
@@ -67,6 +68,14 @@ export default function Contacts() {
             })
             .catch(err => console.error("Failed to fetch user", err));
     }, []);
+
+    useEffect(() => {
+        if (view === "all") {
+            fetchContacts();
+        } else if (view === "favorites") {
+            fetchFavorites();
+        }
+    }, [view, page, search]);
 
 
     // =====================
@@ -97,7 +106,8 @@ export default function Contacts() {
                     lastName: form.lastName,
                     title: form.title,
                     emails: form.emails,
-                    phoneNumbers: form.phoneNumbers
+                    phoneNumbers: form.phoneNumbers,
+                    isFavorite: form.isFavorite
                 };
                 await createContact(payload);
                 showToast("Contact created successfully", "success");
@@ -169,6 +179,40 @@ export default function Contacts() {
         }
     };
 
+    const fetchFavorites = async () => {
+        try {
+            setLoading(true);
+            const res = await fetch("/api/contacts/favorites", {
+                headers: {
+                    "Authorization": `Bearer ${localStorage.getItem("token")}`
+                }
+            });
+
+            const data = await res.json();
+            setContacts(data);
+            setTotalPages(1); // no pagination for favorites
+        } catch (err) {
+            console.error(err);
+        }finally {
+            setLoading(false);
+        }
+    };
+
+    const handleToggleFavorite = async (id) => {
+        try {
+            const res = await toggleFavorite(id);
+
+            setContacts(prev =>
+                prev.map(c =>
+                    c.id === id
+                        ? { ...c, isFavorite: res.data.isFavorite }
+                        : c
+                )
+            );
+        } catch (err) {
+            console.error(err);
+        }
+    };
 
 
     // =====================
@@ -226,45 +270,75 @@ export default function Contacts() {
 
     // Get Contacts Modal
     return (
-        <div className="contacts-page">
 
+        <div className="contacts-page">
             {/* NAVBAR */}
             <div className="navbar">
                 <h2>📇 Contacts Management System</h2>
                 <div className="navbar-right">
-                <div
-                    className="username"
-                    onClick={() => setShowMenu(prev => !prev)}
-                >
-                    <div className="avatar">
-                        {user?.name?.charAt(0)}
-                    </div>
-                    <span className="username">{user?.name}</span>
-                    <span className="caret">▾</span>
-
-                    {showMenu && (
-                        <div className="dropdown">
-                            <div
-                                className="dropdown-item profile"
-                                onClick={() => navigate("/profile")}
-                            >
-                                👤 Profile
-                            </div>
-                            <div
-                                className="dropdown-item logout"
-                                onClick={handleLogout}
-                            >
-                                🚪 Logout
-                            </div>
+                    <div
+                        className="username"
+                        onClick={() => setShowMenu(prev => !prev)}
+                    >
+                        <div className="avatar">
+                            {user?.name?.charAt(0)}
                         </div>
-                    )}
-                </div>
+                        <span className="username">{user?.name}</span>
+                        <span className="caret">▾</span>
+
+                        {showMenu && (
+                            <div className="dropdown">
+                                <div
+                                    className="dropdown-item profile"
+                                    onClick={() => navigate("/profile")}
+                                >
+                                    👤 Profile
+                                </div>
+                                <div
+                                    className="dropdown-item logout"
+                                    onClick={handleLogout}
+                                >
+                                    🚪 Logout
+                                </div>
+                            </div>
+                        )}
+                    </div>
                 </div>
             </div>
 
 
+            <div className="contacts-layout">
+
+            {/* SIDEBAR */}
+            <div className="sidebar">
+                <div className="sidebar-title">📂 Menu</div>
+
+                <div
+                    className={`sidebar-item ${view === "all" ? "active" : ""}`}
+                    onClick={() => setView("all")}
+                >
+                    📇 All Contacts
+                </div>
+
+                <div
+                    className={`sidebar-item ${view === "favorites" ? "active" : ""}`}
+                    onClick={() => { navigate("/favorites");
+                setPage(0)}}
+                >
+                    ❤️ Favorites
+                </div>
+
+                <div
+                    className="sidebar-item"
+                    onClick={() => navigate("/dashboard")}
+                >
+                    📊 Dashboard
+                </div>
+            </div>
+
 
             {/* MAIN CONTENT */}
+
             <div className="contacts-content">
 
                 <div className="contacts-header">
@@ -305,6 +379,13 @@ export default function Contacts() {
                             </div>
 
                             <div className="contact-actions">
+                                <button
+                                    className="favorite-btn"
+                                    onClick={() => handleToggleFavorite(c.id)}
+                                >
+                                    {c.isFavorite ? "❤️" : "🤍"}
+                                </button>
+
                                 <button
                                     className="delete-btn"
                                     onClick={() => {
@@ -649,8 +730,7 @@ export default function Contacts() {
                     {toast.message}
                 </div>
             )}
-
-
+            </div>
         </div>
     );
 }
