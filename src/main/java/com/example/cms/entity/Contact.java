@@ -47,6 +47,9 @@ public class Contact {
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
 
+    @Column(nullable = false)
+    private boolean isFavorite;
+
     @PrePersist
     void onCreate() {
         createdAt = LocalDateTime.now();

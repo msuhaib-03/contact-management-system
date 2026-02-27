@@ -1,5 +1,6 @@
 package com.example.cms.service;
 
+import com.example.cms.dto.FavoriteResponseDTO;
 import com.example.cms.entity.Contact;
 import com.example.cms.entity.User;
 import com.example.cms.exception.ResourceAlreadyExistsException;
@@ -12,6 +13,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 @Service
 public class ContactService {
@@ -76,5 +79,27 @@ public class ContactService {
         return userRepository.findByEmail(email)
                 .orElseThrow(() -> new ResourceNotFoundException("User not found"));
     }
+
+    // ==============================================================
+    // OPTIONAL FEATURES HERE AFTER COMPLETION OF CORE FEATURES AND REQUIRED ONE FOR INTERNSHIP
+    public List<Contact> getFavoriteContacts() {
+        User user = getLoggedInUser();
+        return contactRepository.findByUserIdAndIsFavoriteTrue(user.getId());
+    }
+
+    public FavoriteResponseDTO toggleFvorite(Long id) {
+        User user = getLoggedInUser();
+        Contact contact = contactRepository.findByIdAndUser(id, user)
+                .orElseThrow(() -> new ResourceNotFoundException("Contact not found"));
+
+        contact.setFavorite(!contact.isFavorite());
+        contactRepository.save(contact);
+
+        return new FavoriteResponseDTO(
+                contact.getId(),
+                contact.isFavorite()
+        );
+    }
+
 
 }
